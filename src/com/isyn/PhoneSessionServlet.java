@@ -60,8 +60,8 @@ public class PhoneSessionServlet extends HttpServlet {
 			// Test for ccExpiry
 			hpciRequestParamMap.put("ccExpiry", "request");
 			
-			// URL action used
-			urlString = "https://api-sampqa1stg.c1.hostedpci.com/iSynSApp/manageCCMapPhoneAPI.action";
+			// URL action used			
+			urlString = mapConfig.get("serviceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
 			
 		} else if(flag.equals("checkStatus")) {
 			
@@ -76,7 +76,7 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("selectedPcsId", sessionId);
 			
 			//URL action used
-			urlString = "https://api-sampqa1stg.c1.hostedpci.com/iSynSApp/manageCCMapPhoneAPI.action";
+			urlString = mapConfig.get("serviceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
 				
 		} else if(flag.equals("processPayment")) {
 			
@@ -120,8 +120,8 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("pxyTransaction.txnComment", paymentComments);
 			hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
 			
-			// URL action used
-			urlString = "https://api-sampqa1stg.c1.hostedpci.com/iSynSApp/paymentAuth.action";
+			// URL action used			
+			urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
 		}
 		
 		response.setHeader("Cache-Control", "no-cache");

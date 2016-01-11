@@ -149,7 +149,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 			// Assuming the full request param map is ready
 			// Url string is made of the api url which is given by
 			// HostedPCI + "iSynSApp/paymentAuth.action"
-			String urlString = "https://api-sampqa1stg.c1.hostedpci.com/iSynSApp/paymentAuth.action";
+			String urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
 			// Uses the callUrl method to initiate the call to HostedPCI using the iframe,
 			// It requires the complete url and the populated map
 			String callResponse = DemoUtil.callUrl(urlString, hpciRequestParamMap);
@@ -236,8 +236,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 			hpciResponseMap.put("pxyOrder.orderItems[" + "0" + "].itemId", "Item-1-" + merchantRefId);
 			hpciResponseMap.put("pxyOrder.orderItems[" + "0" + "].itemTaxable", "N"); // Y/N
 
-			String urlString = "https://api-sampqa1stg.c1.hostedpci.com/iSynSApp/paymentAuth.action";
-			
+			String urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
 			String callResponse = DemoUtil.callUrl(urlString, hpciResponseMap);
 			// Send the response call back to the 3rd page
 			request.setAttribute("responseMap", DemoUtil.parseQueryString(callResponse));
