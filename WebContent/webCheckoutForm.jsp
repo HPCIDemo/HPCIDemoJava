@@ -75,16 +75,16 @@
 		//alert("Received preliminary CVV details");
 	}
 
-	var hpciCCDigitsSuccessHandler = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue) {
+	var hpciCCDigitsSuccessHandlerV2 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, hpciCCEnteredLengthValue) {
 		// Use to enable credit card digits key press
 		sendHPCIChangeClassMsg("ccNum-wrapper", "input-text input-text--validatable");
 		
 		if(hpciCCValidValue == "Y") {
 			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--populated");
-		} else if(hpciCCValidValue == "N" && hpciCCLengthValue == "0") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
-		} else if(hpciCCValidValue == "N") {
+		}  else if(hpciCCValidValue == "N" && hpciCCEnteredLengthValue > "0") {
 			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
+		} else if(hpciCCValidValue == "N" && hpciCCEnteredLengthValue == "0") {
+			sendHPCIChangeClassMsg("ccNum", "input-text__input");
 		}
 		if(hpciCCTypeValue == "visa") {
 			document.getElementById("visa").className = "fa fa-cc-visa active";
@@ -110,7 +110,9 @@
 		sendHPCIChangeClassMsg("ccCVV-wrapper", "input-text input-text--validatable");
 		
 		var cvvLength = Number(hpciCVVDigitsValue);
-		if((cvvLength < 3) || (cvvLength > 4)) {
+		if (cvvLength == 0) {
+			sendHPCIChangeClassMsg("ccCVV", "input-text__input");
+		} else if ((cvvLength < 3) || (cvvLength > 4)) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--invalid input-text__input--populated");
 		} else if ((cvvLength >= 3) && (cvvLength <= 4)) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--populated");
