@@ -58,8 +58,10 @@ public class Iframe3DSecServlet extends HttpServlet {
 			PrintWriter out = response.getWriter();
 	
 			// Initiate the call back
-			out.print("sid:"+mapConfig.get("sid")
-			+","+"locationName:" +mapConfig.get("locationName"));							
+			out.print("sid;"+mapConfig.get("sid")
+				+","+"locationName;" +mapConfig.get("locationName")
+				+","+"currency;" +mapConfig.get("currency")
+				+","+"paymentProfile;" +mapConfig.get("paymentProfile"));				
 		}	
 	}
 
@@ -166,6 +168,13 @@ public class Iframe3DSecServlet extends HttpServlet {
 			globalMap.put("cardCVV", cardCVV);
 			globalMap.put("amount", amount);
 			globalMap.put("comments", comments);
+			globalMap.put("siteId", mapConfig.get("sid"));
+			
+			String hostName = request.getServerName();
+			Integer portNum = request.getServerPort();
+			String fullParentHost = request.getScheme() + "://" + hostName + ":" +portNum;
+			globalMap.put("fullParentHost", fullParentHost);
+			
 			// Send globalMap to the 2nd response page
 			request.setAttribute("globalMap", globalMap);
 			

@@ -20,15 +20,41 @@ import javax.servlet.http.HttpServletResponse;
 public class PhoneSessionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Map<String, String> mapConfig ;
+	private String flag = "";
+	
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		// Preprocess request
+		// Get flag from the ajax call
+		if(request.getParameterMap().containsKey("flag")){
+					flag = request.getParameter("flag");
+		}
+		// Populate hpciRequestParamMap with all the needed pairs of information
+		mapConfig = DemoUtil.getConfigProperties();
+		
+		if(flag.equals("config")) {
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("text/html");
+			
+			// Call HPCI using the populated map and action url string			
+			PrintWriter out = response.getWriter();
+			
+			// Initiate the call back
+			out.print("currency;" +mapConfig.get("currency")
+					+","+"paymentProfile;" +mapConfig.get("paymentProfile"));							
+		}		
+	}
  
 	public void doPost (HttpServletRequest request,HttpServletResponse response)
             throws ServletException, IOException {
     	
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();
-		
 		// Populate hpciRequestParamMap with all the needed pairs of information
 		mapConfig = DemoUtil.getConfigProperties();
+		
 		hpciRequestParamMap.put("apiVersion",mapConfig.get("apiVersion"));
 		hpciRequestParamMap.put("apiType", mapConfig.get("apiType"));
 		
@@ -41,7 +67,9 @@ public class PhoneSessionServlet extends HttpServlet {
 		// Prepare the urlString which will be initialized as empty
 		String urlString = "";
 		// Get flag from the ajax call
-		String flag = request.getParameter("flag");
+		if(request.getParameterMap().containsKey("flag")){
+			flag = request.getParameter("flag");
+		}
 		
 		// Get sessionId from the ajax call
 		String sessionId = request.getParameter("sessionId");

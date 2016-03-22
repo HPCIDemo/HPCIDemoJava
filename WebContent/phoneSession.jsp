@@ -15,7 +15,52 @@ $(document).ready(function(event){
 	
 	// Initial value for flag is createSession, meaning it's a fresh page load and only possible action is createSession
 	var flag = "createSession";
-	var currentSessionId = "";
+	var currentSessionId = "";	
+	
+	jQuery.get("PhoneSessionServlet",
+    	    {
+    			flag:"config",
+    		},
+    		function(data){
+    			//parse the result
+    			var resultMap = [], queryToken;
+    		    if(data != undefined) {
+    				queryTokenList = data.split(',');
+    				for(var i = 0; i < queryTokenList.length; i++){
+   						queryToken = queryTokenList[i].split(';');
+   						resultMap.push(queryToken[1]);
+   						resultMap[queryToken[0]] = queryToken[1];
+    				}
+    		    }    			
+    			currency = resultMap["currency"];
+    			//Setting currency drop-down list options
+    			if(currency){
+    				var currencyCombo = document.getElementById("currency");    				  				
+    				queryTokenList = currency.split('/');
+    				for(var i = 0; i < queryTokenList.length; i++){
+    					var option = document.createElement('option');  
+    					queryToken = queryTokenList[i].split('=');
+   						option.value = queryToken[1];
+   						option.text = queryToken[0];
+   						currencyCombo.add(option, 0);	
+    				}
+    			}
+    			//Setting Payment Profile drop-down list options
+    			paymentProfile= resultMap["paymentProfile"];
+    			if(paymentProfile){    				
+    				var paymentProfileCombo = document.getElementById("paymentProfile");    				  				
+    				queryTokenList = paymentProfile.split('/');
+    				for(var i = 0; i < queryTokenList.length; i++){
+    					var optionPaymentProfile = document.createElement('option');  
+    					queryToken = queryTokenList[i].split('=');
+   						optionPaymentProfile.value = queryToken[1];
+   						optionPaymentProfile.text = queryToken[0];
+   						paymentProfileCombo.add(optionPaymentProfile, 0);	
+    				}
+    			}    			
+    			console.log("Currency:" +currency);
+    			console.log("Payment Profiles:" +paymentProfile);    			
+    		});
 	// Initiate createSession function on createSessionButton click
 	$("#createSessionButton").click(function createSession(){
 		$.post("PhoneSessionServlet",
@@ -403,9 +448,7 @@ $(document).ready(function () {
 								<label>Currency:</label>
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
-								<select id="currency" name="currency">
-									<option value="CAD">Canadian Dollar</option>
-									<option value="USD">US Dollar</option>
+								<select id="currency" name="currency">									
 								</select>
 							</div>
 						</div><!-- row -->
@@ -422,10 +465,7 @@ $(document).ready(function () {
 								<label>Payment Profile:</label>
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
-								<select id="paymentProfile" name="paymentProfile">
-									<option value="DEF">DEF - Currency: CAD</option>
-									<option value="DEF_MONERIS">DEF_MONERIS - Currency: CAD</option>
-									<option value="DEF_MONERIS">DEF_MONERIS - Currency: USD</option>
+								<select id="paymentProfile" name="paymentProfile">									
 								</select>
 							</div>
 						</div><!-- row -->

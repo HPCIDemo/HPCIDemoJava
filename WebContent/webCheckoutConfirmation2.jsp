@@ -16,13 +16,13 @@
 	rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
 <!-- Jquery 1.4.1-->
-<!-- <script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/jquery-1.4.1.min.js" type="text/javascript" charset="utf-8"></script> -->
+<!-- <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery-1.4.1.min.js" type="text/javascript" charset="utf-8"></script> -->
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost = "https://cc.hostedpci.com";
-	var hpciCCFrameFullUrl = "https://cc.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&locationName=javasample1&sid=528160&reportCCType=Y&fullParentHost=http://localhost:8799&fullParentQStr=/webCheckoutForm3DSec.jsp";
+	var hpciCCFrameHost = "https://ccframe.hostedpci.com";
+	var hpciCCFrameFullUrl ;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
@@ -95,6 +95,46 @@ $(document).ready(function(){
 </script>
 <script type="text/javascript">
 $(document).ready(function () {
+	var siteId;
+    var locationName;
+    var fullParentQStr;
+    var fullParentHost;    
+    var flag = "config";
+    
+    jQuery.get("Iframe3DSecServlet",
+    	    {
+    			flag:flag,
+    		},
+    		function(data){
+    			//parse the result
+    			var resultMap = [], queryToken;
+    		    if(data != undefined) {
+    				queryTokenList = data.split(',');
+    				for(var i = 0; i < queryTokenList.length; i++){
+   						queryToken = queryTokenList[i].split(';');
+   						resultMap.push(queryToken[1]);
+   						resultMap[queryToken[0]] = queryToken[1];
+    				}
+    		    }
+    			siteId = resultMap["sid"];
+    			locationName = resultMap["locationName"]; 
+    			fullParentQStr = "webCheckoutConfirmation2.jsp";
+    			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    			
+    			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
+    			console.log(location.pathname);
+    			console.log("SiteId :" + siteId);
+    			console.log("LocationName :" +locationName);  
+    			
+    			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    				    +"locationName="+locationName
+    				    +"&sid=" + siteId
+    				    +"&reportCCType=Y"
+    				    +"&fullParentHost=" + fullParentHost
+    				    +"&fullParentQStr=" + fullParentQStr;    			  			
+    			console.log(hpciCCFrameFullUrl);
+    		});
+	
 	$('#noButton').click(function () {
 		$('#message').hide('slow');
 	});

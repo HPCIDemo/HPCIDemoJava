@@ -16,11 +16,11 @@
 	rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost = "https://cc.hostedpci.com";
-	var hpciCCFrameFullUrl = "https://cc.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&locationName=javasample1&sid=528160&reportCCType=Y&fullParentHost=http://localhost:8799&fullParentQStr=/webCheckoutConfirmation1.jsp";
+	var hpciCCFrameHost = "https://ccframe.hostedpci.com";
+	var hpciCCFrameFullUrl ;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
@@ -79,6 +79,46 @@
 </script>
 <script type="text/javascript">
 $(document).ready(function () {
+	var siteId;
+    var locationName;
+    var fullParentQStr;
+    var fullParentHost;    
+    var flag = "config";
+    
+    jQuery.get("Iframe3DSecServlet",
+    	    {
+    			flag:flag,
+    		},
+    		function(data){
+    			//parse the result
+    			var resultMap = [], queryToken;
+    		    if(data != undefined) {
+    				queryTokenList = data.split(',');
+    				for(var i = 0; i < queryTokenList.length; i++){
+   						queryToken = queryTokenList[i].split(';');
+   						resultMap.push(queryToken[1]);
+   						resultMap[queryToken[0]] = queryToken[1];
+    				}
+    		    }
+    			siteId = resultMap["sid"];
+    			locationName = resultMap["locationName"]; 
+    			fullParentQStr = "/webCheckoutConfirmation1.jsp";
+    			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    					
+    			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
+    			console.log(location.pathname);
+    			console.log("SiteId :" + siteId);
+    			console.log("LocationName :" +locationName);  
+    			
+    			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    				    +"locationName="+locationName
+    				    +"&sid=" + siteId
+    				    +"&reportCCType=Y"
+    				    +"&fullParentHost=" + fullParentHost
+    				    +"&fullParentQStr=" + fullParentQStr;    			  			
+    			console.log(hpciCCFrameFullUrl);
+    		});
+        	
 	$('#noButton').click(function () {
 		$('#message').hide('slow');
 	});
@@ -110,7 +150,7 @@ $(document).ready(function () {
 							<label>*******************</label><br />
 							<c:choose>
 								<c:when test="${map['pxyResponse.threeDSEnrolled'].equals('Y')}">
-									<iframe seamless id="threeDSecFrame" name="threeDSecFrame" onload="receivePINMsg()" src="https://cc.hostedpci.com/iSynSApp/appUserVerify3DResp!verificationForm.action?sid=528160&authTxnId=${map['pxyResponse.threeDSTransactionId']}&fullParentHost=http://localhost:8799&fullParentQStr=/webCheckoutConfirmation1.jsp" width=450 height=400 style="border:none">
+									<iframe seamless id="threeDSecFrame" name="threeDSecFrame" onload="receivePINMsg()" src="https://ccframe.hostedpci.com/iSynSApp/appUserVerify3DResp!verificationForm.action?sid=${globalMap['siteId']}&authTxnId=${map['pxyResponse.threeDSTransactionId']}&fullParentHost=${globalMap['fullParentHost']}&fullParentQStr=/webCheckoutConfirmation1.jsp" width=450 height=400 style="border:none">
 									If you can see this, your browser doesn't understand IFRAME.
 									</iframe>
 									<br />

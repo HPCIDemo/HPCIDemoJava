@@ -45,8 +45,10 @@ public class IframeServlet extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			
 			// Initiate the call back
-			out.print("sid:"+mapConfig.get("sid")
-					+","+"locationName:" +mapConfig.get("locationName"));							
+			out.print("sid;"+mapConfig.get("sid")
+					+","+"locationName;" +mapConfig.get("locationName")
+					+","+"currency;" +mapConfig.get("currency")
+					+","+"paymentProfile;" +mapConfig.get("paymentProfile"));							
 		}		
 	}
 

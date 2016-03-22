@@ -19,11 +19,10 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost = "https://cc.hostedpci.com";
-	//var hpciCCFrameFullUrl = "https://cc.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&locationName=javasample1&sid=528160&reportCCType=Y&fullParentHost=http://localhost:8799&fullParentQStr=/webCheckoutForm3DSec.jsp";
+	var hpciCCFrameHost = "https://ccframe.hostedpci.com";	
 	var hpciCCFrameFullUrl;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 
@@ -78,19 +77,20 @@
 	var hpciCVVPreliminarySuccessHandler = function(hpciCVVLengthValue) {
 		// Adapt the following message / action to match your required experience
 		//alert("Received preliminary CVV details");
-	}
-	
-	var hpciCCDigitsSuccessHandler = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue) {
+	}	
+	var hpciCCDigitsSuccessHandlerV2 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, hpciCCEnteredLengthValue) {
 		// Use to enable credit card digits key press
 		sendHPCIChangeClassMsg("ccNum-wrapper", "input-text input-text--validatable");
 		
 		if(hpciCCValidValue == "Y") {
 			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--populated");
 		} else if(hpciCCValidValue == "N" && hpciCCLengthValue == "0") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
-		} else if(hpciCCValidValue == "N") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
-		}
+			if(hpciCCEnteredLengthValue > "0") {
+				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
+			} else {
+				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
+			}			
+		} 
 		if(hpciCCTypeValue == "visa") {
 			document.getElementById("visa").className = "fa fa-cc-visa active";
 		} else if(hpciCCTypeValue == "mastercard") {
@@ -128,6 +128,8 @@ jQuery(document).ready(function() {
     var locationName;
     var fullParentQStr;
     var fullParentHost;
+    var currency;
+    var paymentProfile;
     var flag = "config";
     
     jQuery.get("Iframe3DSecServlet",
@@ -140,7 +142,7 @@ jQuery(document).ready(function() {
     		    if(data != undefined) {
     				queryTokenList = data.split(',');
     				for(var i = 0; i < queryTokenList.length; i++){
-   						queryToken = queryTokenList[i].split(':');
+   						queryToken = queryTokenList[i].split(';');
    						resultMap.push(queryToken[1]);
    						resultMap[queryToken[0]] = queryToken[1];
     				}
@@ -149,11 +151,39 @@ jQuery(document).ready(function() {
     			locationName = resultMap["locationName"]; 
     			fullParentQStr = location.pathname;
     			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    			currency = resultMap["currency"];
+    			//Setting currency drop-down list options
+    			if(currency){
+    				var currencyCombo = document.getElementById("currency");    				  				
+    				queryTokenList = currency.split('/');
+    				for(var i = 0; i < queryTokenList.length; i++){
+    					var option = document.createElement('option');  
+    					queryToken = queryTokenList[i].split('=');
+   						option.value = queryToken[1];
+   						option.text = queryToken[0];
+   						currencyCombo.add(option, 0);	
+    				}
+    			}
+    			//Setting Payment Profile drop-down list options
+    			paymentProfile= resultMap["paymentProfile"];
+    			if(paymentProfile){    				
+    				var paymentProfileCombo = document.getElementById("paymentProfile");    				  				
+    				queryTokenList = paymentProfile.split('/');
+    				for(var i = 0; i < queryTokenList.length; i++){
+    					var optionPaymentProfile = document.createElement('option');  
+    					queryToken = queryTokenList[i].split('=');
+   						optionPaymentProfile.value = queryToken[1];
+   						optionPaymentProfile.text = queryToken[0];
+   						paymentProfileCombo.add(optionPaymentProfile, 0);	
+    				}
+    			}
     			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
     			console.log(location.pathname);
     			console.log("SiteId :" + siteId);
-    			console.log("LocationName :" +locationName);    			
-    			hpciCCFrameFullUrl = "https://cc.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    			console.log("LocationName :" +locationName);  
+    			console.log("Currency:" +currency);
+    			console.log("Payment Profiles:" +paymentProfile);
+    			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
     				    +"locationName="+locationName
     				    +"&sid=" + siteId
     				    +"&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
@@ -348,9 +378,7 @@ jQuery(document).ready(function() {
 								<label>Currency:</label>
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
-								<select id="currency" name="currency">
-									<option value="CAD">Canadian Dollar</option>
-									<option value="USD">US Dollar</option>
+								<select id="currency" name="currency">									
 								</select>
 							</div>
 						</div>
@@ -368,10 +396,7 @@ jQuery(document).ready(function() {
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
 								<select id="paymentProfile" name="paymentProfile">
-									<option value="DEF_3DSEC">DEF_3DSEC - Currency: any</option>
-									<option value="DEF">DEF - Currency: USD</option>
-									<option value="DEF_MONERIS">DEF_MONERIS - Currency: CAD</option>
-									<option value="DEF_MONERIS">DEF_MONERIS - Currency: USD</option>
+									<option value="DEF_3DSEC">DEF_3DSEC - Currency: any</option>									
 								</select>
 							</div>
 						</div>						

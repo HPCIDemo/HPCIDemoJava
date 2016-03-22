@@ -12,7 +12,7 @@
 <link href="css/template.css" rel="stylesheet">
 
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cc.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 $(document).ready(function () {
 	$('#noButton').click(function () {
