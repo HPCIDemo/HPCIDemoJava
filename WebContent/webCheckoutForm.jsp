@@ -84,10 +84,14 @@
 		} else if(hpciCCValidValue == "N" && hpciCCLengthValue == "0") {
 			if(hpciCCEnteredLengthValue > "0") {
 				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
-			} else {
-				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
-			}			
-		} 				
+			} 
+			else {
+				sendHPCIChangeClassMsg("ccNum", "input-text__input");
+			}
+		} else if(hpciCCValidValue == "N" && hpciCCLengthValue > "0" && hpciCCEnteredLengthValue > "0") {
+			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
+		} 
+		
 		if(hpciCCTypeValue == "visa") {
 			document.getElementById("visa").className = "fa fa-cc-visa active";
 		} else if(hpciCCTypeValue == "mastercard") {
@@ -113,7 +117,11 @@
 		
 		var cvvLength = Number(hpciCVVDigitsValue);
 		if((cvvLength < 3) || (cvvLength > 4)) {
-			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--invalid input-text__input--populated");
+			if (cvvLength == 0) {
+				sendHPCIChangeClassMsg("ccCVV", "input-text__input");
+			}else{
+				sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--invalid input-text__input--populated");
+			}
 		} else if ((cvvLength >= 3) && (cvvLength <= 4)) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--populated");
 		}
