@@ -21,7 +21,7 @@
 	var hpciCCFrameHost = "https://ccframe.hostedpci.com";
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 	var hpciCCFrameFullUrl;
-
+	
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
 		// Please the following alert to properly display the error message
 		//alert("Error while processing credit card code:" + errorCode + "; msg:"	+ errorMsg);
@@ -30,7 +30,7 @@
 
 	var hpciSiteSuccessHandlerV2 = function(mappedCCValue, mappedCVVValue, ccBINValue) {
 		// Please pass the values to the document input and then submit the form
-
+		
 		// No errors from iframe so hide the errorMessage div
 		document.getElementById('errorMessage').style.display = 'none';
 		// Name of the input (hidden) field required by ecommerce site
@@ -75,37 +75,19 @@
 		//alert("Received preliminary CVV details");
 	}
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
->>>>>>> Stashed changes
 	var hpciCCDigitsSuccessHandlerV2 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, hpciCCEnteredLengthValue) {
 		// Use to enable credit card digits key press
 		sendHPCIChangeClassMsg("ccNum-wrapper", "input-text input-text--validatable");
-
+		
 		if(hpciCCValidValue == "Y") {
 			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--populated");
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 		} else if(hpciCCValidValue == "N" && hpciCCLengthValue == "0") {
 			if(hpciCCEnteredLengthValue > "0") {
 				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
 			} else {
 				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
-			}
-		}
-=======
->>>>>>> origin/master
->>>>>>> Stashed changes
-		}  else if(hpciCCValidValue == "N" && hpciCCEnteredLengthValue > "0") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
-		} else if(hpciCCValidValue == "N" && hpciCCEnteredLengthValue == "0") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input");
-		}
+			}			
+		} 				
 		if(hpciCCTypeValue == "visa") {
 			document.getElementById("visa").className = "fa fa-cc-visa active";
 		} else if(hpciCCTypeValue == "mastercard") {
@@ -124,21 +106,19 @@
 			document.getElementById("jcb").className = "fa fa-cc-jcb";
 		}
 	}
-
+	
 	var hpciCVVDigitsSuccessHandler = function(hpciCVVDigitsValue) {
 		// Use to enable CVV digits key press
 		sendHPCIChangeClassMsg("ccCVV-wrapper", "input-text input-text--validatable");
-
+		
 		var cvvLength = Number(hpciCVVDigitsValue);
-		if (cvvLength == 0) {
-			sendHPCIChangeClassMsg("ccCVV", "input-text__input");
-		} else if ((cvvLength < 3) || (cvvLength > 4)) {
+		if((cvvLength < 3) || (cvvLength > 4)) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--invalid input-text__input--populated");
 		} else if ((cvvLength >= 3) && (cvvLength <= 4)) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--populated");
 		}
 	}
-
+	
 	/* sendHPCIChangeClassMsg(elementId, classValue);
 	var sendHPCIChangeClassMsg = function(elementId, classValue) {
 		// Enable changing class inside the iFrame
@@ -146,7 +126,7 @@
 	} */
 </script>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+jQuery(document).ready(function() {	
 	var siteId;
     var locationName;
     var fullParentQStr;
@@ -154,7 +134,7 @@ jQuery(document).ready(function() {
     var currency;
     var paymentProfile;
     var flag = "config";
-
+    
     jQuery.get("IframeServlet",
     	    {
     			flag:flag,
@@ -171,33 +151,33 @@ jQuery(document).ready(function() {
     				}
     		    }
     			siteId = resultMap["sid"];
-    			locationName = resultMap["locationName"];
+    			locationName = resultMap["locationName"]; 
     			fullParentQStr = location.pathname;
     			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
-    			//Setting currency drop-down list options
     			currency = resultMap["currency"];
+    			//Setting currency drop-down list options
     			if(currency){
-    				var currencyCombo = document.getElementById("currency");
+    				var currencyCombo = document.getElementById("currency");    				  				
     				queryTokenList = currency.split('/');
     				for(var i = 0; i < queryTokenList.length; i++){
-    					var optionCurrency = document.createElement('option');
+    					var optionCurrency = document.createElement('option');  
     					queryToken = queryTokenList[i].split('=');
    						optionCurrency.value = queryToken[1];
    						optionCurrency.text = queryToken[0];
-   						currencyCombo.add(optionCurrency, 0);
+   						currencyCombo.add(optionCurrency, 0);	
     				}
     			}
     			//Setting Payment Profile drop-down list options
     			paymentProfile= resultMap["paymentProfile"];
-    			if(paymentProfile){
-    				var paymentProfileCombo = document.getElementById("paymentProfile");
+    			if(paymentProfile){    				
+    				var paymentProfileCombo = document.getElementById("paymentProfile");    				  				
     				queryTokenList = paymentProfile.split('/');
     				for(var i = 0; i < queryTokenList.length; i++){
-    					var optionPaymentProfile = document.createElement('option');
+    					var optionPaymentProfile = document.createElement('option');  
     					queryToken = queryTokenList[i].split('=');
    						optionPaymentProfile.value = queryToken[1];
    						optionPaymentProfile.text = queryToken[0];
-   						paymentProfileCombo.add(optionPaymentProfile, 0);
+   						paymentProfileCombo.add(optionPaymentProfile, 0);	
     				}
     			}
     			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
@@ -212,16 +192,16 @@ jQuery(document).ready(function() {
     				    +"&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
     				    +"&fullParentHost=" + fullParentHost
     				    +"&fullParentQStr=" + fullParentQStr;
-    			document.getElementById("ccframe").src=hpciCCFrameFullUrl;
+    			document.getElementById("ccframe").src=hpciCCFrameFullUrl;    			
     			console.log(hpciCCFrameFullUrl);
     		});
-
+        
 	jQuery('#paymentResetButton').click(function resetPayment() {
 		document.getElementById('CCAcceptForm').reset();
-	});
-
+	});	
+	
 	jQuery('input:text').on('blur', function(){
-		if (jQuery(this).val() ) {
+		if (jQuery(this).val() ) { 
 			jQuery(this).attr("class", "input-text__input input-text__input--populated");
 		} else {
 			jQuery(this).attr("class", "");
@@ -267,8 +247,8 @@ jQuery(document).ready(function() {
 						<!-- iframe -->
 						<div class="form-group">
 							<div class="col-xs-12">
-								<iframe seamless id="ccframe" name="ccframe" onload="receiveHPCIMsg()" src="" style="border:none; max-width:800px; min-width:30px; width:100%" height="140">
-								If you can see this, your browser doesn't understand IFRAME.
+								<iframe seamless id="ccframe" name="ccframe" onload="receiveHPCIMsg()" src="" style="border:none; max-width:800px; min-width:30px; width:100%" height="140"> 
+								If you can see this, your browser doesn't understand IFRAME. 
 								</iframe>
 							</div>
 						</div><!-- form-group -->
@@ -307,7 +287,7 @@ jQuery(document).ready(function() {
 									<option value="12">12 - December</option>
 								</select>
 							</div>
-							<div class="col-xs-2 col-sm-2 col-md-2">
+							<div class="col-xs-2 col-sm-2 col-md-2">		
 								<!-- id is used in confirmation.jsp -->
 								<select id="expiryYear" name="expiryYear" class="selectpicker">
 									<option value="15">2015</option>
@@ -417,7 +397,7 @@ jQuery(document).ready(function() {
 								<label>Currency:</label>
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
-								<select id="currency" name="currency">
+								<select id="currency" name="currency">									
 								</select>
 							</div>
 						</div>
@@ -434,7 +414,7 @@ jQuery(document).ready(function() {
 								<label>Payment Profile:</label>
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
-								<select id="paymentProfile" name="paymentProfile">
+								<select id="paymentProfile" name="paymentProfile">									
 								</select>
 							</div>
 						</div>
@@ -443,7 +423,7 @@ jQuery(document).ready(function() {
 								<!-- Submit button -->
 								<button type="submit" value="Submit" class="btn btn-primary"
 									onClick='return sendHPCIMsg();'>Process Payment</button>
-							</div>
+							</div>	
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<!-- Reset button -->
 								<button id="paymentResetButton" type="button" value="Reset Payment" class="btn btn-primary">Reset Payment</button><br />
@@ -459,12 +439,12 @@ jQuery(document).ready(function() {
 						<div class="form-group">
 							<!-- Hidden form-groups that are required by the iframe -->
 							<div class="col-xs-6 col-sm-3 col-md-4">
-								<input type="hidden" id="ccNum" name="ccNum" value="" class="form-control">
-								<input type="hidden" id="ccCVV" name="ccCVV" value="" class="form-control">
+								<input type="hidden" id="ccNum" name="ccNum" value="" class="form-control"> 
+								<input type="hidden" id="ccCVV" name="ccCVV" value="" class="form-control"> 
 								<input type="hidden" id="ccBIN" name="ccBIN" value="" class="form-control">
 							</div>
 						</div>
-					</fieldset>
+					</fieldset>	
 				</fieldset><!-- Outer fieldset -->
 			</form>
 		</div><!-- col-md-7 col-centered -->
