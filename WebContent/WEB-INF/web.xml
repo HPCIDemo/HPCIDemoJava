@@ -18,6 +18,12 @@
   </servlet>
   <servlet>
     <description></description>
+    <servlet-name>MultipleIframesServlet</servlet-name>
+    <servlet-class>com.isyn.MultipleIframesServlet</servlet-class>
+    <url-pattern>/MultipleIframesServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
     <servlet-name>PhoneSessionServlet</servlet-name>
     <servlet-class>com.isyn.PhoneSessionServlet</servlet-class>
     <url-pattern>/PhoneSessionServlet</url-pattern>

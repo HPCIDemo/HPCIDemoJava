@@ -31,6 +31,8 @@
 								<!-- Link to IVR demo app -->
 								<a href="/phoneSession.jsp" role="button" class="btn btn-primary">Phone/Call Center (IVR)</a>
 								<br /><br />
+								<!-- Link to Multiple Iframes demo app -->
+								<a href="/webCheckoutMultipleIframes.jsp" role="button" class="btn btn-primary">Web Checkout (Multiple Iframes) </a>
 							</div>
 						</div>
 					</fieldset>
