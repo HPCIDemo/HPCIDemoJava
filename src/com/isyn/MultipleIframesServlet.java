@@ -125,24 +125,6 @@ public class MultipleIframesServlet extends HttpServlet{
 		// It requires the complete url and the populated map
 		String callResponse = DemoUtil.callUrl(urlString, hpciRequestParamMap);
 
-		// Uses the parseQueryString method to collect the response from HostedPCI
-		// And pass the resulting map in a parameter "map" to be used in the
-		// webCheckoutConfirmation.jsp file
-		request.setAttribute("map", DemoUtil.parseQueryString(callResponse));
-
-		// Create a map to be returned to the client's browser at the end
-		Map<String, String> globalMap = new LinkedHashMap<String, String>();
-		globalMap.put("cardNumber", cardNumber);
-		globalMap.put("cardCVV", cardCVV);
-		globalMap.put("merchantRefId", merchantRefId);
-		globalMap.put("amount", amount);
-		globalMap.put("comments", comments);
-		// Send globalMap to the response page
-		request.setAttribute("globalMap", globalMap);
-			
-		// Pass all the information that was collected to the confirmation page
-		// "webCheckoutConfirmation.jsp"
-		//request.getRequestDispatcher("/webCheckoutConfirmation.jsp").forward(request, response);
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Pragma", "no-cache");
 		response.setCharacterEncoding("utf-8");
@@ -151,11 +133,6 @@ public class MultipleIframesServlet extends HttpServlet{
 		// Call HPCI using the populated map and action url string			
 		PrintWriter out = response.getWriter();
 		
-		// Initiate the call back
-//		out.print("sid;"+mapConfig.get("sid")
-//				+","+"locationName;" +mapConfig.get("locationName")
-//				+","+"currency;" +mapConfig.get("currency")
-//				+","+"paymentProfile;" +mapConfig.get("paymentProfile"));	
 		out.print(callResponse);	
 		// END: of doPost
 	}

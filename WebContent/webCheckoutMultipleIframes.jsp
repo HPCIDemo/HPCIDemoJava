@@ -22,7 +22,6 @@
 <link href="css/checkout.css" rel="stylesheet">
 
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js" type="text/javascript" charset="utf-8"></script>
 <script
 	src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js"
 	type="text/javascript" charset="utf-8"></script>
@@ -43,9 +42,10 @@
 	var fullParentHost;
 	var currency;
 	var paymentProfile;
-	
+
 	var iframes;
 	var iframeCounter = 0;
+	// Notify when the tokenization process is finished.
 	var deferred;
 
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
@@ -56,7 +56,8 @@
 		return deferred.reject();
 	}
 
-	var hpciSiteSuccessHandlerV2 = function(mappedCCValue, mappedCVVValue, ccBINValue) {
+	var hpciSiteSuccessHandlerV2 = function(mappedCCValue, mappedCVVValue,
+			ccBINValue) {
 
 		// Please pass the values to the document input and then submit the form
 
@@ -77,14 +78,16 @@
 		var ccBINInput = jQuery('#ccBIN' + (iframeCounter + 1));
 		ccBINInput.val(ccBINValue);
 
-		// Name of the form submission for ecommerce site
-		var pendingForm = document.getElementById("CCAcceptForm");
-
 		console.log("Success Handler");
-		jQuery('#trSummary' + (iframeCounter + 1)).html(jQuery('#trSummary' + (iframeCounter + 1)).html() + "Tokenize iframe " + (iframeCounter + 1) + ", id: "
-				+ iframes[iframeCounter].id + "." + "<br/>");
-		jQuery('#trSummary' + (iframeCounter + 1)).html(jQuery('#trSummary' + (iframeCounter + 1)).html() + "Credit card token: "
-				+ jQuery('#ccNum' + (iframeCounter + 1)).val() +"." + "<br/>");
+		jQuery('#trSummary' + (iframeCounter + 1)).html(
+				jQuery('#trSummary' + (iframeCounter + 1)).html()
+						+ "Tokenize iframe " + (iframeCounter + 1) + ", id: "
+						+ iframes[iframeCounter].id + "." + "<br/>");
+		jQuery('#trSummary' + (iframeCounter + 1)).html(
+				jQuery('#trSummary' + (iframeCounter + 1)).html()
+						+ "Credit card token: "
+						+ jQuery('#ccNum' + (iframeCounter + 1)).val() + "."
+						+ "<br/>");
 		if (hasNextIframe()) {
 			setNextIframe();
 			sendHPCIMsg();
@@ -93,7 +96,6 @@
 		}
 
 		return false;
-		//pendingForm.submit();
 
 	}
 
@@ -184,54 +186,73 @@
 	function submitForm() {
 		console.log("submit");
 		jQuery('#trSummary').show();
-		deferred.done(function() {
-			jQuery('#trSummary').html(jQuery('#trSummary').html() + 'The tokenization process is completed.' + "<br/>");
-			processPayment();
-		}).fail(function() {
-			jQuery('#trSummary').html(jQuery('#trSummary').html() + 'Error tokenizing a credit card.' + "<br/>");
-		});
+		deferred.done(
+				function() {
+					jQuery('#trSummary').html(
+							jQuery('#trSummary').html()
+									+ 'The tokenization process is completed.'
+									+ "<br/>");
+					processPayment();
+				}).fail(
+				function() {
+					jQuery('#trSummary').html(
+							jQuery('#trSummary').html()
+									+ 'Error tokenizing a credit card.'
+									+ "<br/>");
+				});
 
 		sendHPCIMsg();
 	}
 
-	function processPayment(){
-		for (i = 0; i < iframes.length; i++) { 
-			jQuery.post(
-					"MultipleIframesServlet",
-					{
-						"ccNum": jQuery("#ccNum" + (i+1)).val(),
-						"ccCVV": jQuery("#ccCVV" + (i+1)).val(),
-						"amount": jQuery("#amount" + (i+1)).val(),
-						"merchantRefId": new Date().valueOf(),
-						"currency": "CAD",
-						"paymentProfile": "DEF",
-						"expiryMonth": jQuery("#expiryMonth" + (i+1)).val(),
-						"expiryYear" : jQuery("#expiryYear" + (i+1)).val(),
-						
-					},
-					function(data){
-						//parse the result
-						var resultMap = [], queryToken;
-						if (data != undefined) {
-							queryTokenList = data
-									.split(',');
-							for (var i = 0; i < queryTokenList.length; i++) {
-								queryToken = queryTokenList[i]
-										.split(';');
-								resultMap
-										.push(queryToken[1]);
-								resultMap[queryToken[0]] = queryToken[1];
-								jQuery('#trSummary').html(jQuery('#trSummary').html() + "=====================================================" + "<br/>");
-								jQuery('#trSummary').html(jQuery('#trSummary').html() + data + "<br/>");
-							}
-						}
-						
-					}
-					
-				);
+	function processPayment() {
+		for (i = 0; i < iframes.length; i++) {
+			jQuery
+					.post(
+							"MultipleIframesServlet",
+							{
+								"ccNum" : jQuery("#ccNum" + (i + 1)).val(),
+								"ccCVV" : jQuery("#ccCVV" + (i + 1)).val(),
+								"amount" : jQuery("#amount" + (i + 1)).val(),
+								"merchantRefId" : new Date().valueOf(),
+								"currency" : "CAD",
+								"paymentProfile" : "DEF",
+								"expiryMonth" : jQuery("#expiryMonth" + (i + 1))
+										.val(),
+								"expiryYear" : jQuery("#expiryYear" + (i + 1))
+										.val(),
+
+							},
+							function(data) {
+								//parse the result
+								var resultMap = parseQueryString(data);
+								console.log("i:" +i);
+								console.log(jQuery('#trSummary' + (i + 1)).html());
+								console.log('Call status: ' + resultMap['status']);
+								if (data != undefined) {
+									jQuery('#trSummary' + (i + 1))
+											.html(
+													jQuery(
+															'#trSummary'
+																	+ (i + 1))
+															.html()
+															+ "Processing the payment.."
+															+ "<br/>"
+															+ "Transaction result: "
+															+ resultMap["status"]
+															+ "<br/>");
+									jQuery('#trSummary')
+											.html(
+													jQuery('#trSummary').html()
+															+ "====================================================="
+															+ "<br/>");
+									jQuery('#trSummary').html(
+											jQuery('#trSummary').html() + data
+													+ "<br/>");
+
+								}
+							});
 		}
-		
-		
+
 	}
 	function hasNextIframe() {
 		return (++iframeCounter < iframes.length) ? iframeCounter : false;
@@ -241,120 +262,26 @@
 		hpciCCFrameName = iframes[iframeCounter].id;
 		hpciStatusReset();
 	}
-	
-	function generateIframes(iframeCounter){
-		var source   = $("#iframe-template").html();
-		var template = Handlebars.compile(source);
-			
-		for (i = 0; i < iframeCounter; i++) { 
-			//Set an iframe "src" attribute
-			CCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
-				+ "locationName="
-				+ locationName
-				+ "&sid="
-				+ siteId
-				+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
-				+ "&ccNumTokenIdx="
-				+ (i + 1)
-				+ "&fullParentHost="
-				+ fullParentHost
-				+ "&fullParentQStr="
-				+ fullParentQStr;
-				
-			jQuery("#ccframe" + (i + 1)).attr("src", CCFrameFullUrl);
-				
-				console.log("Iframe " + (i + 1) + " src param: "
-						+ CCFrameFullUrl);
-			if(i == 0){
-					//Set the first iframe for a credit card tokenization
-					hpciCCFrameFullUrl = CCFrameFullUrl;
-					hpciCCFrameName = "ccframe" + (i + 1);
-			}
-			var context = {ccframe: "ccframe"+ (i+1), hpciIframeSrc: CCFrameFullUrl,
-					expiryMonth: "expiryMonth" + (i+1), expiryYear: "expiryYear" + (i+1),
-					amount: "amount" + (i+1), trSummary: "trSummary" + (i+1),
-					ccNum: "ccNum" + (i+1), ccCVV: "ccCVV" + (i+1) ,ccBIN: "ccBIN" + (i+1)};
-			var iframeHtml    = template(context);
-			jQuery('#iframeContainer').append(iframeHtml +"<br/>");
+
+	function parseQueryString(data) {
+		//parse the result
+		var resultMap = [], queryToken;
+
+		queryTokenList = data.split('&');
+		for (var i = 0; i < queryTokenList.length; i++) {
+			queryToken = queryTokenList[i].split('=');
+			resultMap.push(queryToken[1]);
+			resultMap[queryToken[0]] = queryToken[1];
 		}
 		
+		return resultMap;
 	}
 </script>
-<script id="iframe-template" type="text/x-handlebars-template">
-	<!-- iframe -->
-	<div class="form-group">
-		<div class = "row">
-				<div class="col-xs-6">
-					<iframe seamless id="{{ccframe}}" name="{{ccframe}}"
-						onload="receiveHPCIMsg()" src="{{hpciIframeSrc}}"
-						style="border: none; max-width: 800px; min-width: 30px; width: 100%"
-						height="140"> If you can see this, your browser
-						doesn't understand IFRAME. </iframe>
-				</div>
-				<div class="col-xs-6">
-					<div id="{{trSummary}}">
-					</div>
-				</div>
-			</div>
-			<div class = "row">
-				<div class="col-xs-5 col-sm-3 col-md-3">
-					<select id="{{expiryMonth}}" name="{{expiryMonth}}" class="selectpicker">
-						<option value="01">01 - January</option>
-						<option value="02">02 - February</option>
-						<option value="03">03 - March</option>
-						<option value="04">04 - April</option>
-						<option value="05">05 - May</option>
-						<option value="06">06 - June</option>
-						<option value="07">07 - July</option>
-						<option value="08">08 - August</option>
-						<option value="09">09 - September</option>
-						<option value="10">10 - October</option>
-						<option value="11">11 - November</option>
-						<option value="12">12 - December</option>
-					</select>
-				</div>
-				<div class="col-xs-2 col-sm-2 col-md-2">		
-					<!-- id is used in confirmation.jsp -->
-					<select id="{{expiryYear}}" name="{{expiryYear}}" class="selectpicker">
-						<option value="16">2016</option>
-						<option value="17">2017</option>
-						<option value="18">2018</option>
-						<option value="19">2019</option>
-						<option value="20">2020</option>
-						<option value="21">2021</option>
-						<option value="22">2022</option>
-						<option value="23">2023</option>
-						<option value="24">2024</option>
-						<option value="25">2025</option>
-						<option value="26">2026</option>
-					</select>
-				</div>
-				<div class="booking-form__field">
-					<div class="input-text col-xs-6">
-						<input id="{{amount}}" type="text" name="{{amount}}">
-						<label for="{{amount}}">
-						Payment Amount
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-				<!-- Hidden form-groups that are required by the iframe -->
-					<div class="col-xs-6 col-sm-3 col-md-4">
-						<input type="hidden" id="{{ccNum}}" name="{{ccNum}}" value="" class="form-control">
-						<input type="hidden" id="{{ccCVV}}" name="{{ccCVV}}" value="" class="form-control"> 
-						<input type="hidden" id="{{ccBIN}}" name="{{ccBIN}}" value="" class="form-control">
-					</div>
-				</div>
-			</div>
-		</div>
-</script>
+
 <script type="text/javascript">
 	jQuery(document)
 			.ready(
 					function() {
-						var hpciIframeNumber = 2;
-						
-						
 						deferred = $.Deferred();
 
 						jQuery
@@ -394,25 +321,55 @@
 											console.log("SiteId :" + siteId);
 											console.log("LocationName :"
 													+ locationName);
-											
-											//Generate Iframes
-											generateIframes(hpciIframeNumber);
-											
+
 											iframes = jQuery("iframe");
+											//Set the "src" attribute for the Hpci iframe
+											for (i = 0; i < iframes.length; i++) {
+												CCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+														+ "locationName="
+														+ locationName
+														+ "&sid="
+														+ siteId
+														+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
+														+ "&ccNumTokenIdx="
+														+ (i + 1)
+														+ "&fullParentHost="
+														+ fullParentHost
+														+ "&fullParentQStr="
+														+ fullParentQStr;
+
+												jQuery("#" + iframes[i].id)
+														.attr("src",
+																CCFrameFullUrl);
+
+												console.log("Iframe " + (i + 1)
+														+ " src param: "
+														+ CCFrameFullUrl);
+
+												if (i == 0) {
+													//Set the first iframe for a credit card tokenization
+													hpciCCFrameFullUrl = CCFrameFullUrl;
+													hpciCCFrameName = iframes[i].id;
+												}
+											}
 											console.log(iframes);
-											
+
 										});
 
-						jQuery('#paymentResetButton')
-								.click(
-										function resetPayment() {
-											jQuery('#CCAcceptForm').trigger('reset');
-											jQuery("#ccframe").attr("src", jQuery("#ccframe").attr("src"));
-											jQuery("#ccframe-2").attr("src", jQuery("#ccframe-2").attr("src"));
-											// Set the name of the iframe containing the credit card
-											hpciCCFrameName = "ccframe";
-											jQuery('#trSummary').hide();
-										});
+						jQuery('#paymentResetButton').click(
+								function resetPayment() {
+									jQuery('#CCAcceptForm').trigger('reset');
+									//Reset iframes
+									for (i = 0; i < iframes.length; i++) {
+										jQuery("#" + iframes[i].id).attr(
+												"src",
+												jQuery("#" + iframes[i].id)
+														.attr("src"));
+									}
+									// Set the name of the iframe containing the credit card
+									hpciCCFrameName = iframes[0].id;
+									jQuery('#trSummary').hide();
+								});
 
 						jQuery('#submitBtn').click(function() {
 							submitForm();
@@ -437,7 +394,7 @@
 <body>
 	<!-- container class sets the page to use 100% width -->
 	<div class="container">
-		<div >
+		<div>
 			<!-- form-group class sets the margins on the sides -->
 			<div class="form-group">
 				<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
@@ -457,9 +414,140 @@
 									<label>Invalid card number, try again</label><br />
 								</div>
 
-								<div id = "iframeContainer">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-6">
+											<iframe seamless id="ccframe1" name="ccframe1"
+												onload="receiveHPCIMsg()" src=""
+												style="border: none; max-width: 800px; min-width: 30px; width: 100%"
+												height="140"> If you can see this, your browser
+												doesn't understand IFRAME. </iframe>
+										</div>
+										<div class="col-xs-6">
+											<div id="trSummary1"></div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-5 col-sm-3 col-md-3">
+											<select id="expiryMonth1" name="expiryMonth1"
+												class="selectpicker">
+												<option value="01">01 - January</option>
+												<option value="02">02 - February</option>
+												<option value="03">03 - March</option>
+												<option value="04">04 - April</option>
+												<option value="05">05 - May</option>
+												<option value="06">06 - June</option>
+												<option value="07">07 - July</option>
+												<option value="08">08 - August</option>
+												<option value="09">09 - September</option>
+												<option value="10">10 - October</option>
+												<option value="11">11 - November</option>
+												<option value="12">12 - December</option>
+											</select>
+										</div>
+										<div class="col-xs-2 col-sm-2 col-md-2">
+											<!-- id is used in confirmation.jsp -->
+											<select id="expiryYear1" name="expiryYear1"
+												class="selectpicker">
+												<option value="16">2016</option>
+												<option value="17">2017</option>
+												<option value="18">2018</option>
+												<option value="19">2019</option>
+												<option value="20">2020</option>
+												<option value="21">2021</option>
+												<option value="22">2022</option>
+												<option value="23">2023</option>
+												<option value="24">2024</option>
+												<option value="25">2025</option>
+												<option value="26">2026</option>
+											</select>
+										</div>
+										<div class="booking-form__field">
+											<div class="input-text col-xs-6">
+												<input id="amount1" type="text" name="amount1"> <label
+													for="amount1"> Payment Amount </label>
+											</div>
+										</div>
+										<div class="form-group">
+											<!-- Hidden form-groups that are required by the iframe -->
+											<div class="col-xs-6 col-sm-3 col-md-4">
+												<input type="hidden" id="ccNum1" name="ccNum1" value=""
+													class="form-control"> <input type="hidden"
+													id="ccCVV1" name="ccCVV1" value="" class="form-control">
+												<input type="hidden" id="ccBIN1" name="ccBIN1" value=""
+													class="form-control">
+											</div>
+										</div>
+									</div>
+								</div>
 
-								</div><!-- iframeContainer -->
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-6">
+											<iframe seamless id="ccframe2" name="ccframe2"
+												onload="receiveHPCIMsg()" src=""
+												style="border: none; max-width: 800px; min-width: 30px; width: 100%"
+												height="140"> If you can see this, your browser
+												doesn't understand IFRAME. </iframe>
+										</div>
+										<div class="col-xs-6">
+											<div id="trSummary2"></div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-5 col-sm-3 col-md-3">
+											<select id="expiryMonth2" name="expiryMonth2"
+												class="selectpicker">
+												<option value="01">01 - January</option>
+												<option value="02">02 - February</option>
+												<option value="03">03 - March</option>
+												<option value="04">04 - April</option>
+												<option value="05">05 - May</option>
+												<option value="06">06 - June</option>
+												<option value="07">07 - July</option>
+												<option value="08">08 - August</option>
+												<option value="09">09 - September</option>
+												<option value="10">10 - October</option>
+												<option value="11">11 - November</option>
+												<option value="12">12 - December</option>
+											</select>
+										</div>
+										<div class="col-xs-2 col-sm-2 col-md-2">
+											<!-- id is used in confirmation.jsp -->
+											<select id="expiryYear2" name="expiryYear2"
+												class="selectpicker">
+												<option value="16">2016</option>
+												<option value="17">2017</option>
+												<option value="18">2018</option>
+												<option value="19">2019</option>
+												<option value="20">2020</option>
+												<option value="21">2021</option>
+												<option value="22">2022</option>
+												<option value="23">2023</option>
+												<option value="24">2024</option>
+												<option value="25">2025</option>
+												<option value="26">2026</option>
+											</select>
+										</div>
+										<div class="booking-form__field">
+											<div class="input-text col-xs-6">
+												<input id="amount2" type="text" name="amount2"> <label
+													for="amount2"> Payment Amount </label>
+											</div>
+										</div>
+										<div class="form-group">
+											<!-- Hidden form-groups that are required by the iframe -->
+											<div class="col-xs-6 col-sm-3 col-md-4">
+												<input type="hidden" id="ccNum2" name="ccNum2" value=""
+													class="form-control"> <input type="hidden"
+													id="ccCVV2" name="ccCVV2" value="" class="form-control">
+												<input type="hidden" id="ccBIN2" name="ccBIN2" value=""
+													class="form-control">
+											</div>
+										</div>
+									</div>
+								</div>
+
 								<!-- Credit card icons -->
 								<div class="form-group">
 									<div class="col-xs-12">
@@ -495,14 +583,6 @@
 											onClick="location.assign('home.jsp');"></input>
 									</div>
 								</div>
-								<div class="form-group">
-									<!-- Hidden form-groups that are required by the iframe -->
-									<div class="col-xs-6 col-sm-3 col-md-4">
-										<input type="hidden" id="ccNum" name="ccNum" value="" class="form-control"> 
-										<input type="hidden" id="ccCVV" name="ccCVV" value="" class="form-control"> 
-										<input type="hidden" id="ccBIN" name="ccBIN" value="" class="form-control">
-									</div>
-								</div>
 							</fieldset>
 						</fieldset>
 						<!-- Outer fieldset -->
@@ -512,9 +592,8 @@
 			</div>
 			<!-- form-group -->
 		</div>
-		<br/>
-		<div id="trSummary" class="col-md-7 col-centered">
-		</div>
+		<br />
+		<div id="trSummary" class="col-md-7 col-centered"></div>
 	</div>
 	<!-- container -->
 </body>
