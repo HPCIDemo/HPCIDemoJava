@@ -33,6 +33,9 @@
 								<br /><br />
 								<!-- Link to Multiple Iframes demo app -->
 								<a href="/webCheckoutMultipleIframes.jsp" role="button" class="btn btn-primary">Web Checkout (Multiple Iframes) </a>
+								<br /><br />
+								<!-- Link to Gateway tokenization demo app -->
+								<a href="/gatewayTokenization.jsp" role="button" class="btn btn-primary">Gateway Tokenization</a>
 							</div>
 						</div>
 					</fieldset>

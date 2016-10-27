@@ -96,7 +96,6 @@
 		}
 
 		return false;
-
 	}
 
 	var hpci3DSitePINSuccessHandler = function() {
@@ -225,25 +224,20 @@
 							function(data) {
 								//parse the result
 								var resultMap = parseQueryString(data);
-								console.log("i:" +i);
-								console.log(jQuery('#trSummary' + (i + 1)).html());
-								console.log('Call status: ' + resultMap['status']);
+
 								if (data != undefined) {
-									jQuery('#trSummary' + (i + 1))
-											.html(
-													jQuery(
-															'#trSummary'
-																	+ (i + 1))
-															.html()
-															+ "Processing the payment.."
-															+ "<br/>"
-															+ "Transaction result: "
-															+ resultMap["status"]
-															+ "<br/>");
 									jQuery('#trSummary')
 											.html(
 													jQuery('#trSummary').html()
 															+ "====================================================="
+															+ "<br/>");
+									jQuery('#trSummary')
+											.html(
+													jQuery('#trSummary').html()
+															+ "Processing the payment.."
+															+ "<br/>"
+															+ "Transaction result: "
+															+ resultMap["status"]
 															+ "<br/>");
 									jQuery('#trSummary').html(
 											jQuery('#trSummary').html() + data
@@ -273,7 +267,7 @@
 			resultMap.push(queryToken[1]);
 			resultMap[queryToken[0]] = queryToken[1];
 		}
-		
+
 		return resultMap;
 	}
 </script>
@@ -330,7 +324,7 @@
 														+ locationName
 														+ "&sid="
 														+ siteId
-														+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
+													//	+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
 														+ "&ccNumTokenIdx="
 														+ (i + 1)
 														+ "&fullParentHost="
@@ -351,6 +345,8 @@
 													hpciCCFrameFullUrl = CCFrameFullUrl;
 													hpciCCFrameName = iframes[i].id;
 												}
+
+												
 											}
 											console.log(iframes);
 
@@ -365,6 +361,7 @@
 												"src",
 												jQuery("#" + iframes[i].id)
 														.attr("src"));
+										jQuery('#trSummary' + (i+1)).html("");
 									}
 									// Set the name of the iframe containing the credit card
 									hpciCCFrameName = iframes[0].id;
@@ -375,6 +372,44 @@
 							submitForm();
 						});
 
+						/* jQuery("#ccframe1").contents().find('input').on('blur', function() {
+	  						//console.log(this.name);
+	              			console.log("blur");
+						}); */
+						jQuery("iframe").on('click', function() {
+	  						//console.log(this.name);
+	              			console.log("blur");
+						});
+	         			 jQuery('input').on('blur', function () { alert('You clicked me!'); });
+	         			console.log("Iframe"+ jQuery("#ccframe1").contents().filter('body').css( "background-color", "#BADA55" ));
+	         			
+	         			/* $("iframe").each(function () {
+	         		        
+	         		            $(this).contents().find('body').find('input').on('blur', function() {
+	    	  						//console.log(this.name);
+	    	              			console.log("blur");
+	         		                //console.log(1);
+	         		            });
+	         		        
+	         		    }); */
+	         		   $("iframe").each(function () {
+	         		        $(this).load(function () {
+	         		            $(this).contents().find('body').find("input").blur(function() {
+	         		                alert(1);
+	         		            });
+	         		        });
+	         		    });
+	         			$("iframe").each(function () {
+	         		        
+         		            $(this).contents().find('body').find('input').on('blur', function() {
+    	  						//console.log(this.name);
+    	              			console.log("blur");
+         		                //console.log(1);
+         		            });
+         		        
+         		    });
+         			
+	         			
 						jQuery('input:text')
 								.on(
 										'blur',
@@ -462,23 +497,26 @@
 												<option value="26">2026</option>
 											</select>
 										</div>
+									</div>
+									<div class="row">
 										<div class="booking-form__field">
 											<div class="input-text col-xs-6">
 												<input id="amount1" type="text" name="amount1"> <label
 													for="amount1"> Payment Amount </label>
 											</div>
 										</div>
-										<div class="form-group">
-											<!-- Hidden form-groups that are required by the iframe -->
-											<div class="col-xs-6 col-sm-3 col-md-4">
-												<input type="hidden" id="ccNum1" name="ccNum1" value=""
-													class="form-control"> <input type="hidden"
-													id="ccCVV1" name="ccCVV1" value="" class="form-control">
-												<input type="hidden" id="ccBIN1" name="ccBIN1" value=""
-													class="form-control">
-											</div>
+									</div>
+									<div class="form-group">
+										<!-- Hidden form-groups that are required by the iframe -->
+										<div class="col-xs-6 col-sm-3 col-md-4">
+											<input type="hidden" id="ccNum1" name="ccNum1" value=""
+												class="form-control"> <input type="hidden"
+												id="ccCVV1" name="ccCVV1" value="" class="form-control">
+											<input type="hidden" id="ccBIN1" name="ccBIN1" value=""
+												class="form-control">
 										</div>
 									</div>
+
 								</div>
 
 								<div class="form-group">
@@ -559,28 +597,30 @@
 									</div>
 								</div>
 								<!-- form-group -->
-								<!-- Input form-group (exp, month, cvv) -->
-
-								<div class="form-group">
-									<div class="col-xs-6 col-sm-3 col-md-4">
-										<!-- Submit button -->
-										<button type="button" value="Submit" id="submitBtn"
-											class="btn btn-primary">Process Payment</button>
-									</div>
-									<div class="col-xs-6 col-sm-3 col-md-4">
-										<!-- Reset button -->
-										<button id="paymentResetButton" type="button"
-											value="Reset Payment" class="btn btn-primary">Reset
-											Payment</button>
-										<br />
+								<div class="row">
+									<div class="form-group">
+										<div class="col-xs-6 col-sm-3 col-md-4">
+											<!-- Submit button -->
+											<button type="button" value="Submit" id="submitBtn"
+												class="btn btn-primary">Process Payment</button>
+										</div>
+										<div class="col-xs-6 col-sm-3 col-md-4">
+											<!-- Reset button -->
+											<button id="paymentResetButton" type="button"
+												value="Reset Payment" class="btn btn-primary">Reset
+												Payment</button>
+											<br />
+										</div>
 									</div>
 								</div>
 								<br />
-								<div class="form-group">
-									<div class="col-xs-6 col-sm-3 col-md-4">
-										<!-- Back button -->
-										<input Type="button" class="btn btn-primary" value="Back"
-											onClick="location.assign('home.jsp');"></input>
+								<div class="row">
+									<div class="form-group">
+										<div class="col-xs-6 col-sm-3 col-md-4">
+											<!-- Back button -->
+											<input Type="button" class="btn btn-primary" value="Back"
+												onClick="location.assign('home.jsp');"></input>
+										</div>
 									</div>
 								</div>
 							</fieldset>

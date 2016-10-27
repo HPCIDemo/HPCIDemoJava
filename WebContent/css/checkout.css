@@ -201,10 +201,25 @@ label, label>* {
 	clear: left;
 }
 
-#trSummary {
+#trSummary{
 	word-wrap: break-word;
     max-width: 823px;
 	display: none;
+	font-family: sans-serif;
+	border: 5px solid white;
+	background: white;
+	border-radius: 5px;
+	padding: 15px;
+	margin-top: 10px;
+}
+
+.gtySummary{
+	display: none	
+}
+
+.message{
+	word-wrap: break-word;
+    max-width: 823px;
 	font-family: sans-serif;
 	border: 5px solid white;
 	background: white;
