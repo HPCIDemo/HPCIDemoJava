@@ -372,44 +372,6 @@
 							submitForm();
 						});
 
-						/* jQuery("#ccframe1").contents().find('input').on('blur', function() {
-	  						//console.log(this.name);
-	              			console.log("blur");
-						}); */
-						jQuery("iframe").on('click', function() {
-	  						//console.log(this.name);
-	              			console.log("blur");
-						});
-	         			 jQuery('input').on('blur', function () { alert('You clicked me!'); });
-	         			console.log("Iframe"+ jQuery("#ccframe1").contents().filter('body').css( "background-color", "#BADA55" ));
-	         			
-	         			/* $("iframe").each(function () {
-	         		        
-	         		            $(this).contents().find('body').find('input').on('blur', function() {
-	    	  						//console.log(this.name);
-	    	              			console.log("blur");
-	         		                //console.log(1);
-	         		            });
-	         		        
-	         		    }); */
-	         		   $("iframe").each(function () {
-	         		        $(this).load(function () {
-	         		            $(this).contents().find('body').find("input").blur(function() {
-	         		                alert(1);
-	         		            });
-	         		        });
-	         		    });
-	         			$("iframe").each(function () {
-	         		        
-         		            $(this).contents().find('body').find('input').on('blur', function() {
-    	  						//console.log(this.name);
-    	              			console.log("blur");
-         		                //console.log(1);
-         		            });
-         		        
-         		    });
-         			
-	         			
 						jQuery('input:text')
 								.on(
 										'blur',
