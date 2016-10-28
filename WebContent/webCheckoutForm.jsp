@@ -89,7 +89,7 @@
 				sendHPCIChangeClassMsg("ccNum", "input-text__input");
 			}
 		} else if(hpciCCValidValue == "N" && hpciCCLengthValue > "0" && hpciCCEnteredLengthValue > "0") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid");
+			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
 		} 
 		
 		if(hpciCCTypeValue == "visa") {

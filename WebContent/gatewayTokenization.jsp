@@ -21,8 +21,8 @@
 	var hpciCCFrameHost = "https://ccframe.hostedpci.com";
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 	var hpciCCFrameFullUrl;
-	var hpciExpMonthName = "expMonth";
-	var hpciExpYearName = "expYear";
+	var hpciExpMonthName = "ccExpMonth";
+	var hpciExpYearName = "ccExpYear";
 	var hpciFirstNameName = "firstName";
 	var hpciLastNameName = "lastName";
 	var hpciGtyTokenEnabled = true;
@@ -245,7 +245,7 @@ jQuery(document).ready(function() {
 						<!-- Input form-group (exp, month, cvv) -->
 						<div class="form-group">
 							<div class="col-xs-5 col-sm-3 col-md-3">
-								<select id="expMonth" name="expMonth" class="selectpicker">
+								<select id="ccExpMonth" name="ccExpMonth" class="selectpicker">
 									<option value="01">01 - January</option>
 									<option value="02">02 - February</option>
 									<option value="03">03 - March</option>
@@ -262,7 +262,7 @@ jQuery(document).ready(function() {
 							</div>
 							<div class="col-xs-2 col-sm-2 col-md-2">		
 								<!-- id is used in confirmation.jsp -->
-								<select id="expYear" name="expYear" class="selectpicker">
+								<select id="ccExpYear" name="ccExpYear" class="selectpicker">
 									<option value="16">2016</option>
 									<option value="17">2017</option>
 									<option value="18">2018</option>
