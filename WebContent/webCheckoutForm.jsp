@@ -92,6 +92,7 @@
 			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
 		} 
 		
+		// Display the card type icon on keypress
 		if(hpciCCTypeValue == "visa") {
 			document.getElementById("visa").className = "fa fa-cc-visa active";
 		} else if(hpciCCTypeValue == "mastercard") {
@@ -108,6 +109,15 @@
 			document.getElementById("amex").className = "fa fa-cc-amex";
 			document.getElementById("discover").className = "fa fa-cc-discover";
 			document.getElementById("jcb").className = "fa fa-cc-jcb";
+		}
+		
+		// Custom validation to only accept certain card types
+		if(hpciCCTypeValue == "visa" || hpciCCTypeValue == "mastercard" || hpciCCTypeValue == "na") {
+			document.getElementById("submitButton").disabled = false;
+			document.getElementById("errorMessage2").style.display = "none";
+		} else {
+			document.getElementById("submitButton").disabled = true;
+			document.getElementById("errorMessage2").style.display = "block";
 		}
 	}
 	
@@ -195,6 +205,7 @@ jQuery(document).ready(function() {
     			console.log("Currency:" +currency);
     			console.log("Payment Profiles:" +paymentProfile);
     			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    			/* hpciCCFrameFullUrl = "http://cc.localhpc.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&" */
     				    +"locationName="+locationName
     				    +"&sid=" + siteId
     				    +"&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
@@ -236,6 +247,7 @@ jQuery(document).ready(function() {
 						<legend>Credit Card Information</legend>
 						<!-- Error message for invalid credit card -->
 						<div id="errorMessage" style="display:none;color:red"><label>Invalid card number, try again</label><br/></div>
+						<div id="errorMessage2" style="display:none;color:red"><label>We only accept Visa and MasterCard!</label><br/></div>
 						<!-- <div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								Select credit card
@@ -429,7 +441,7 @@ jQuery(document).ready(function() {
 						<div class="form-group">
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<!-- Submit button -->
-								<button type="submit" value="Submit" class="btn btn-primary"
+								<button type="submit" value="Submit" id="submitButton" class="btn btn-primary"
 									onClick='return sendHPCIMsg();'>Process Payment</button>
 							</div>	
 							<div class="col-xs-6 col-sm-3 col-md-4">
