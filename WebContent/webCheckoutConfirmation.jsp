@@ -8,7 +8,7 @@
 <title>HostedPCI Demo App Confirmation Page</title>
 <!-- Bootstrap 3.2.0-->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
 
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
@@ -28,11 +28,18 @@ $(document).ready(function () {
 <!-- container class sets the page to use 100% width -->
 <div class="container">
 	<!-- row class sets the margins -->
-	<div class="row">
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
 		<div class="col-md-7 col-centered">
+			<div class="demo-navbar">
+				<div class="row">
+					<ul>
+						<li><a href="home.jsp">Home</a></li>
+						<li><a id = "hostedPCI" href="http://www.hostedpci.com/"></a></li>
+					</ul>
+				</div>
+			</div>
 			<form>
-				<section style="margin: 10px;">
+				<section>
 					<fieldset style="min-height: 100px;">
 						<!-- Form Name -->
 						<legend>Web Checkout</legend>
@@ -78,7 +85,6 @@ $(document).ready(function () {
 				</section>
 			</form>
 		</div><!-- col-md-7 col-centered -->
-	</div><!-- row -->
 </div><!-- container -->
 </body>
 </html>

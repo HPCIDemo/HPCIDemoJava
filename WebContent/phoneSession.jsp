@@ -7,7 +7,7 @@
 <title>Hosted PCI Demo App Phone Session</title>
 <!-- Bootstrap -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
 <script src="js/jquery-2.1.1.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -267,22 +267,37 @@ $(document).ready(function () {
 </head>
 <body>
 <div class="container">
-	<div class="row">
 		<div class="col-md-7 col-centered">
+			<div class="demo-navbar">
+				<div class="row">
+					<ul>
+						<li><a href="home.jsp">Home</a></li>
+						<li><a id = "hostedPCI" href="http://www.hostedpci.com/"></a></li>
+					</ul>
+				</div>
+			</div>
 			<form id="paymentForm">
 				<fieldset>
 					<legend>Phone Session App</legend>
 					<fieldset>
 						<legend>Session Information</legend>
-						<div class="row">
-							<div class="col-md-4">
+						<div class="form-group session-group">
+							<div class="col-xs-4 col-sm-3 col-md-4">
 								<button id="createSessionButton" type="button" value="Create Session" 
-									class="btn btn-primary">Create Session</button><br /><br />
-								<button id="showProgressButton" type="button" value="Update Progress" 
-									class="btn btn-primary" disabled>Update Progress</button><br />
+									class="btn btn-primary">Create Session</button>
+								
 							</div>
-							<div class="col-md-8">
-								Session Key: <div id="sessionKeyResponse"></div><br />
+							<div class="col-xs-4 col-sm-3 col-md-5">
+								Session Key:<div id="sessionKeyResponse"></div>
+							</div>
+							
+							<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
+							<br>
+							<div class="col-xs-4 col-sm-3 col-md-4">
+								<button id="showProgressButton" type="button" value="Update Progress" 
+									class="btn btn-primary" disabled>Update Progress</button>
+							</div>
+							<div class="col-xs-4 col-sm-3 col-md-5">
 								Session Status: <div id="sessionStatus"></div><br />
 							</div>
 						</div><!-- row -->
@@ -290,14 +305,12 @@ $(document).ready(function () {
 					<br />
 					<fieldset>
 						<legend>Credit Card Information</legend>
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<!-- Select credit card -->
 								<label for="cardType">Card Type</label>
 							</div>
-						</div><!-- row -->
-						<div class="row">
-							<div class="col-xs-4 col-sm-3 col-md-4">
+							<div class="col-xs-4 col-sm-3 col-md-5">
 								<select id="cardType" name="cardType" class="selectpicker">
 									<option value="visa">Visa</option>
 									<option value="mastercard">MasterCard</option>
@@ -305,24 +318,30 @@ $(document).ready(function () {
 								</select>
 							</div>
 						</div><!-- row -->
-						<div class="row">
-							<div class="col-xs-6 col-sm-5 col-md-5">
-								<label>Credit Card Token</label><br />
+						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
+						<div class="form-group">
+							<div class="col-xs-4 col-sm-3 col-md-4">
+								<label>Credit Card Token</label>
+							</div>
+							<div class="col-xs-4 col-sm-3 col-md-5">
 								<input id="ccToken" type="text" name="ccToken" placeholder="Automatically Filled">
 							</div>
-							<div class="col-xs-6 col-sm-5 col-md-5">
-								<label>CVV Token</label><br />
+						</div>
+						<div class="form-group">
+							<div class="col-xs-4 col-sm-3 col-md-4">
+								<label>CVV Token</label>
+							</div>
+							<div class="col-xs-4 col-sm-3 col-md-5">
 								<input id="cvvToken" type="text" name="cvvToken" placeholder="Automatically Filled">
 							</div>
 						</div><!-- row -->
-						<br />
-						<div class="row">
-							<div class="col-xs-5 col-sm-4 col-md-4">
+						<div class="form-group">
+							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Expiry MM/YY</label>
 							</div>
 						</div><!-- row -->
-						<div class="row">
-							<div class="col-xs-5 col-sm-3 col-md-3">
+						<div class="form-group">
+							<div class="col-xs-4 col-sm-3 col-md-4">
 								<select id="expiryMonth" name="expiryMonth" class="selectpicker">
 									<option value="01">01 - January</option>
 									<option value="02">02 - February</option>
@@ -341,8 +360,6 @@ $(document).ready(function () {
 							<div class="col-xs-2 col-sm-2 col-md-2">		
 								<!-- id is used in confirmation.jsp -->
 								<select id="expiryYear" name="expiryYear" class="selectpicker">
-									<option value="15">2015</option>
-									<option value="16">2016</option>
 									<option value="17">2017</option>
 									<option value="18">2018</option>
 									<option value="19">2019</option>
@@ -353,6 +370,7 @@ $(document).ready(function () {
 									<option value="24">2024</option>
 									<option value="25">2025</option>
 									<option value="26">2026</option>
+									<option value="27">2027</option>
 								</select>
 							</div>
 						</div><!-- row -->
@@ -360,7 +378,7 @@ $(document).ready(function () {
 					<br />
 					<fieldset>
 						<legend>Personal Information</legend>
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>First Name:</label>
 							</div>
@@ -368,7 +386,7 @@ $(document).ready(function () {
 								<input id="firstName" type="text" name="firstName">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Last Name:</label>
 							</div>
@@ -376,7 +394,7 @@ $(document).ready(function () {
 								<input id="lastName" type="text" name="lastName">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Address Line 1:</label>
 							</div>
@@ -384,7 +402,7 @@ $(document).ready(function () {
 								<input id="address1" type="text" name="address1">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Address Line 2:</label>
 							</div>
@@ -392,7 +410,7 @@ $(document).ready(function () {
 								<input id="address2" type="text" name="address2">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>City:</label>
 							</div>
@@ -400,7 +418,7 @@ $(document).ready(function () {
 								<input id="city" type="text" name="city">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>State / Province:</label>
 							</div>
@@ -408,7 +426,7 @@ $(document).ready(function () {
 								<input id="state" type="text" name="state">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Zip / Postal Code:</label>
 							</div>
@@ -416,7 +434,7 @@ $(document).ready(function () {
 								<input id="zip" type="text" name="zip">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Country:</label>
 							</div>
@@ -427,7 +445,8 @@ $(document).ready(function () {
 								</select>
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Payment Comments:</label>
 							</div>
@@ -435,7 +454,7 @@ $(document).ready(function () {
 								<input id="paymentComments" type="text" name="paymentComments">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Payment Reference:</label>
 							</div>
@@ -443,7 +462,7 @@ $(document).ready(function () {
 								<input id="paymentReference" type="text" name="paymentReference">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Currency:</label>
 							</div>
@@ -452,7 +471,8 @@ $(document).ready(function () {
 								</select>
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Payment Amount:</label>
 							</div>
@@ -460,7 +480,7 @@ $(document).ready(function () {
 								<input id="paymentAmount" type="text" name="PaymentAmount">
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Payment Profile:</label>
 							</div>
@@ -469,7 +489,8 @@ $(document).ready(function () {
 								</select>
 							</div>
 						</div><!-- row -->
-						<div class="row">
+						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
+						<div class="form-group">
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<button id="processPaymentButton" type="button" value="Process Payment" 
 									class="btn btn-primary" disabled>Process Payment</button><br />
@@ -479,43 +500,36 @@ $(document).ready(function () {
 									class="btn btn-primary" disabled>Reset Payment</button><br />
 							</div>
 						</div><!-- row -->
-						<br />
-						<div class="row">
-							<div class="col-xs-6 col-sm-3 col-md-4">
-								<button Type="button" class="btn btn-primary" value="Back" 
-									onClick="location.assign('home.jsp');">Back</button>
-							</div>
-						</div><!-- row -->
 					</fieldset>
 					<br />
 					<fieldset>
 						<legend>Response</legend>
-						<div class="row">
+						<div class="form-group">
 							<div class="col-md-8">
 								<label>Payment Status: </label>
 								<div id="paymentStatus" style="word-wrap: break-word;"></div><br />
 							</div>	
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-md-8">
 								<label>Reference ID: </label>
 								<div id="referenceId" style="word-wrap: break-word;"></div><br />
 							</div>	
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-md-8">
 								<label>Response Code: </label>
 								<div id="paymentResponseCode" style="word-wrap: break-word;"></div><br />
 							</div>	
 						</div><!-- row -->
-						<div class="row">
+						<div class="form-group">
 							<div class="col-md-8">
 								<label>Response Message: </label>
 								<div id="paymentResponseMessage" style="word-wrap: break-word;"></div><br />
 							</div>	
 						</div><!-- row -->
-						<div class="row">
-							<div class="col-md-12">
+						<div class="form-group">
+							<div class="col-md-8">
 								<label>Show Full Message?</label><br />
 								<input id="noButton" type="radio" name="radioButton" checked />No
 								<input id="yesButton" type="radio" name="radioButton" />Yes
@@ -529,7 +543,6 @@ $(document).ready(function () {
 				</fieldset><!-- Outer fieldset -->
 			</form>
 		</div><!-- col-md-7 col-centered -->
-	</div><!-- row -->
 </div><!-- container -->
 </body>
 </html>

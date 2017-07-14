@@ -49,3 +49,7 @@ fieldset legend {
 	float: none;
 	margin: 0 auto;
 }
+
+#iframe-tokenization{
+	display: none;
+}

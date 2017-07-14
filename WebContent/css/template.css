@@ -18,7 +18,7 @@ fieldset {
 	background: white;
 	border-radius: 5px;
 	padding: 15px;
-	/* margin-right: -20px; */
+	margin-right: -15px;
 	margin-top: 10px;
 }
 
@@ -54,4 +54,173 @@ fieldset legend {
     border-radius: 4px;
     background-color: #F8F8F8;
     display:none;
-}  
+}
+.file-dispatch-wizard .payment-msg-dispatch-wizard .container {
+	margin-top: 40px;
+}
+
+.file-dispatch-wizard .cvvonly-wizard .payment-msg-dispatch-wizard, form {
+	margin-top: 10px;
+}
+
+.file-dispatch-wizard .cvvonly-wizard .payment-msg-dispatch-wizard, .row {
+	background-color: #f1f1f1;
+	margin-top: 10px;
+	text-align: center;
+}
+
+.btn {
+	position: relative;
+	margin: auto;
+	top: 10px;
+	display: block;
+	width: 175px;
+}
+
+.input-group-addon {
+	min-width: 230px;
+	text-align: right;
+}
+
+.file-dispatch-wizard .cvvonly-wizard , fieldset legend {
+	font-size: 22px;
+}
+
+.payment-msg-dispatch-wizard fieldset legend {
+	font-size: 20px;
+}
+
+/* Center the loader */
+#loader {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	z-index: 1;
+	width: 150px;
+	height: 150px;
+	margin: -75px 0 0 -75px;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #3498db;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin { 
+	0% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin { 
+	0% {transform: rotate(0deg);}
+	100% {transform: rotate(360deg);}
+}
+
+#modal {
+	position: fixed;
+	z-index: 999;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background-color: Black;
+	filter: alpha(opacity = 60);
+	opacity: 0.6;
+	-moz-opacity: 0.8;
+}
+
+.form-section {
+  padding-left: 15px;
+  display: none;
+}
+
+.form-section.current {
+  display: inherit;
+}
+
+.file-dispatch-wizard .cvvonly-wizard .payment-msg-dispatch-wizard, .btn-info, .btn-default {
+  margin-top: 10px;
+  font-size: 18px;
+  width: 175px;
+  background: rgba(255,175,75,1);
+  padding: 10px 16px;
+  border-color: white;
+}
+
+body .fa {
+	font-size: 2.5em;
+	width: 1.6em;
+	height: 1.5em;
+	text-align: center;
+}
+
+.fa {
+	color: #efefef;
+}
+
+.fa.fa-cc-amex.active {
+	color: #007bc1;
+}
+
+.fa.fa-cc-discover.active {
+	color: #f68121;
+}
+
+.fa.fa-cc-jcb.active {
+	color: #003a8f;
+}
+
+.fa.fa-cc-mastercard.active {
+	color: #0a3a82;
+}
+
+.fa.fa-cc-visa.active {
+	color: #0157a2;
+}
+
+.demo-navbar{
+	padding-left: 15px;
+}
+
+.demo-navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 30px;
+}
+
+.demo-navbar li{
+	display: inline;
+	float: left;
+}
+
+.demo-navbar li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.demo-navbar li:last-child
+{
+    float:right;
+}
+
+li #hostedPCI {	
+    margin-right: 15px;
+    width: 179px;
+    height: 24px;
+    background: url('../img/logo.png') 0 0;
+}
+
+/* Change the link color on hover */
+.demo-navbar li a:hover {
+    background-color: #555;
+    color: white;
+}
+
+.session-group{
+	line-height: 50px;
+}

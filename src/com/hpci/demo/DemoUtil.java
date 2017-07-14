@@ -1,4 +1,4 @@
-package com.isyn;
+package com.hpci.demo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

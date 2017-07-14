@@ -7,7 +7,7 @@
 <title>HostedPCI Demo App Web Checkout 3D Sec Payment Page</title>
 <!-- Bootstrap -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
 <!-- Font-Awesome -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
@@ -22,7 +22,7 @@
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost = "https://ccframe.hostedpci.com";	
+	var hpciCCFrameHost;	
 	var hpciCCFrameFullUrl;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 
@@ -158,6 +158,7 @@ jQuery(document).ready(function() {
     			locationName = resultMap["locationName"]; 
     			fullParentQStr = location.pathname;
     			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    			hpciCCFrameHost = resultMap["serviceUrl"];
     			currency = resultMap["currency"];
     			//Setting currency drop-down list options
     			if(currency){
@@ -172,7 +173,7 @@ jQuery(document).ready(function() {
     				}
     			}
     			//Setting Payment Profile drop-down list options
-    			paymentProfile= resultMap["paymentProfile"];
+    			paymentProfile= resultMap["securePaymentProfile"];
     			if(paymentProfile){    				
     				var paymentProfileCombo = document.getElementById("paymentProfile");    				  				
     				queryTokenList = paymentProfile.split('/');
@@ -190,7 +191,7 @@ jQuery(document).ready(function() {
     			console.log("LocationName :" +locationName);  
     			console.log("Currency:" +currency);
     			console.log("Payment Profiles:" +paymentProfile);
-    			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    			hpciCCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
     				    +"locationName="+locationName
     				    +"&sid=" + siteId
     				    +"&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
@@ -223,6 +224,14 @@ jQuery(document).ready(function() {
 	<div class="form-group">
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
 		<div class="col-md-7 col-centered">
+			<div class="demo-navbar">
+				<div class="row">
+					<ul>
+						<li><a href="home.jsp">Home</a></li>
+						<li><a id = "hostedPCI" href="http://www.hostedpci.com/"></a></li>
+					</ul>
+				</div>
+			</div>
 			<!-- IMPORTANT: id CCAcceptForm needs to match the ID's in the HostedPCI script code -->
 			<!-- So if you change this ID, make sure to change it in all other places -->
 			<!-- Action points to the servlet -->
@@ -278,8 +287,6 @@ jQuery(document).ready(function() {
 							<div class="col-xs-2 col-sm-2 col-md-2">		
 								<!-- id is used in confirmation.jsp -->
 								<select id="expiryYear" name="expiryYear" class="selectpicker">
-									<option value="15">2015</option>
-									<option value="16">2016</option>
 									<option value="17">2017</option>
 									<option value="18">2018</option>
 									<option value="19">2019</option>
@@ -290,6 +297,8 @@ jQuery(document).ready(function() {
 									<option value="24">2024</option>
 									<option value="25">2025</option>
 									<option value="26">2026</option>
+									<option value="27">2027</option>
+									<option value="28">2028</option>
 								</select>
 							</div>
 						</div><!-- form-group -->
@@ -403,7 +412,6 @@ jQuery(document).ready(function() {
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
 								<select id="paymentProfile" name="paymentProfile">
-									<option value="DEF_3DSEC">DEF_3DSEC - Currency: any</option>									
 								</select>
 							</div>
 						</div>						
@@ -419,12 +427,6 @@ jQuery(document).ready(function() {
 							</div>
 						</div>
 						<br />
-						<div class="form-group">
-							<div class="col-xs-6 col-sm-3 col-md-4">
-								<!-- Back button -->
-								<input Type="button" class="btn btn-primary" value="Back" onClick="location.assign('home.jsp');"></input>
-							</div>
-						</div>
 						<div class="form-group">
 							<!-- Hidden form-groups that are required by the iframe -->
 							<div class="col-xs-6 col-sm-3 col-md-4">

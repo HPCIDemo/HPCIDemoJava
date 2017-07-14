@@ -7,25 +7,49 @@
   <servlet>
     <description></description>
     <servlet-name>IframeServlet</servlet-name>
-    <servlet-class>com.isyn.IframeServlet</servlet-class>
+    <servlet-class>com.hpci.demo.IframeServlet</servlet-class>
     <url-pattern>/IframeServlet</url-pattern>
   </servlet>
   <servlet>
     <description></description>
     <servlet-name>Iframe3DSecServlet</servlet-name>
-    <servlet-class>com.isyn.Iframe3DSecServlet</servlet-class>
+    <servlet-class>com.hpci.demo.Iframe3DSecServlet</servlet-class>
     <url-pattern>/Iframe3DSecServlet</url-pattern>
   </servlet>
   <servlet>
     <description></description>
     <servlet-name>MultipleIframesServlet</servlet-name>
-    <servlet-class>com.isyn.MultipleIframesServlet</servlet-class>
+    <servlet-class>com.hpci.demo.MultipleIframesServlet</servlet-class>
     <url-pattern>/MultipleIframesServlet</url-pattern>
   </servlet>
   <servlet>
     <description></description>
     <servlet-name>PhoneSessionServlet</servlet-name>
-    <servlet-class>com.isyn.PhoneSessionServlet</servlet-class>
+    <servlet-class>com.hpci.demo.PhoneSessionServlet</servlet-class>
     <url-pattern>/PhoneSessionServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
+    <servlet-name>CvvOnlyServlet</servlet-name>
+    <servlet-class>com.hpci.demo.CvvOnlyIframeServlet</servlet-class>
+    <url-pattern>/CvvOnlyServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
+    <servlet-name>FileDispatchServlet</servlet-name>
+    <servlet-class>com.hpci.demo.FileDispatchServlet</servlet-class>
+    <url-pattern>/FileDispatchServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
+    <servlet-name>PaymentMsgDispatchServlet</servlet-name>
+    <servlet-class>com.hpci.demo.PaymentMsgDispatchServlet</servlet-class>
+    <url-pattern>/PaymentMsgDispatchServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
+    <servlet-name>GatewayTokenizationServlet</servlet-name>
+    <servlet-class>com.hpci.demo.GatewayTokenizationServlet</servlet-class>
+    <url-pattern>/GatewayTokenizationServlet</url-pattern>
   </servlet>
 </web-app>

@@ -1,11 +1,9 @@
-package com.isyn;
+package com.hpci.demo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
-//import org.json.JSONArray;
-//import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -89,7 +87,7 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("ccExpiry", "request");
 			
 			// URL action used			
-			urlString = mapConfig.get("serviceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
+			urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
 			
 		} else if(flag.equals("checkStatus")) {
 			
@@ -104,7 +102,7 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("selectedPcsId", sessionId);
 			
 			//URL action used
-			urlString = mapConfig.get("serviceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
+			urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
 				
 		} else if(flag.equals("processPayment")) {
 			
@@ -149,7 +147,7 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
 			
 			// URL action used			
-			urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
+			urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/paymentAuth.action";
 		}
 		
 		response.setHeader("Cache-Control", "no-cache");

@@ -1,4 +1,4 @@
-package com.isyn;
+package com.hpci.demo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -61,7 +61,8 @@ public class Iframe3DSecServlet extends HttpServlet {
 			out.print("sid;"+mapConfig.get("sid")
 				+","+"locationName;" +mapConfig.get("locationName")
 				+","+"currency;" +mapConfig.get("currency")
-				+","+"paymentProfile;" +mapConfig.get("paymentProfile"));				
+				+","+"securePaymentProfile;" +mapConfig.get("securePaymentProfile")
+				+","+"serviceUrl;"+ mapConfig.get("serviceUrl"));				
 		}	
 	}
 
@@ -151,7 +152,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 			// Assuming the full request param map is ready
 			// Url string is made of the api url which is given by
 			// HostedPCI + "iSynSApp/paymentAuth.action"
-			String urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
+			String urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/paymentAuth.action";
 			// Uses the callUrl method to initiate the call to HostedPCI using the iframe,
 			// It requires the complete url and the populated map
 			String callResponse = DemoUtil.callUrl(urlString, hpciRequestParamMap);
@@ -169,6 +170,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 			globalMap.put("amount", amount);
 			globalMap.put("comments", comments);
 			globalMap.put("siteId", mapConfig.get("sid"));
+			globalMap.put("serviceUrl", mapConfig.get("serviceUrl"));
 			
 			String hostName = request.getServerName();
 			Integer portNum = request.getServerPort();
@@ -245,7 +247,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 			hpciResponseMap.put("pxyOrder.orderItems[" + "0" + "].itemId", "Item-1-" + merchantRefId);
 			hpciResponseMap.put("pxyOrder.orderItems[" + "0" + "].itemTaxable", "N"); // Y/N
 
-			String urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
+			String urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/paymentAuth.action";
 			String callResponse = DemoUtil.callUrl(urlString, hpciResponseMap);
 			// Send the response call back to the 3rd page
 			request.setAttribute("responseMap", DemoUtil.parseQueryString(callResponse));

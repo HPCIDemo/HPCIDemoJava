@@ -1,4 +1,4 @@
-package com.isyn;
+package com.hpci.demo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,9 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 // physical url for the servlet
-@WebServlet("/IframeServlet")
-public class IframeServlet extends HttpServlet {
-
+@WebServlet("/MultipleIframesServlet")
+public class MultipleIframesServlet extends HttpServlet{
 	private String cardNumber = "";
 	private String cardCVV = "";
 	private String merchantRefId = "";
@@ -48,7 +47,8 @@ public class IframeServlet extends HttpServlet {
 			out.print("sid;"+mapConfig.get("sid")
 					+","+"locationName;" +mapConfig.get("locationName")
 					+","+"currency;" +mapConfig.get("currency")
-					+","+"paymentProfile;" +mapConfig.get("paymentProfile"));							
+					+","+"paymentProfile;" +mapConfig.get("paymentProfile")
+					+","+"serviceUrl;"+ mapConfig.get("serviceUrl"));							
 		}		
 	}
 
@@ -65,20 +65,20 @@ public class IframeServlet extends HttpServlet {
 		cardCVV = request.getParameter("ccCVV");
 		String expiryMonth = request.getParameter("expiryMonth");
 		String expiryYear = request.getParameter("expiryYear");
-		String firstName = request.getParameter("firstName");
-		String lastName = request.getParameter("lastName");
+//		String firstName = request.getParameter("firstName");
+//		String lastName = request.getParameter("lastName");
 		//String cardType = request.getParameter("cardType");
 		amount = request.getParameter("amount");
 		merchantRefId = request.getParameter("merchantRefId");
 		String currency = request.getParameter("currency");
 		String paymentProfile = request.getParameter("paymentProfile");
-		comments = request.getParameter("comment");
-		String country = request.getParameter("country");
-		String zip = request.getParameter("zip");
-		String state = request.getParameter("state");
-		String city = request.getParameter("city");
-		String address1 = request.getParameter("address1");
-		String address2 = request.getParameter("address2");
+//		comments = request.getParameter("comment");
+//		String country = request.getParameter("country");
+//		String zip = request.getParameter("zip");
+//		String state = request.getParameter("state");
+//		String city = request.getParameter("city");
+//		String address1 = request.getParameter("address1");
+//		String address2 = request.getParameter("address2");
 
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();
@@ -107,45 +107,34 @@ public class IframeServlet extends HttpServlet {
 		hpciRequestParamMap.put("pxyTransaction.txnComment", comments);
 		hpciRequestParamMap.put("pxyCustomerInfo.email", "email@email.com");
 		hpciRequestParamMap.put("pxyCustomerInfo.customerId", "111");
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.firstName", firstName);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.lastName", lastName);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.address", address1);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.address2", address2);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.city", city);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.state", state);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.zipCode", zip);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.country", country);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.firstName", firstName);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.lastName", lastName);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.address", address1);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.address2", address2);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.city", city);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.state", state);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.zipCode", zip);
+//		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.country", country);
 			
 
 		// Assuming the full request param map is ready
 		// Url string is made of the api url which is given by
 		// HostedPCI + "iSynSApp/paymentAuth.action"
 				
-		String urlString = mapConfig.get("serviceUrl") + "/iSynSApp/paymentAuth.action";
+		String urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/paymentAuth.action";
 		// Uses the callUrl method to initiate the call to HostedPCI using the iframe,
 		// It requires the complete url and the populated map
 		String callResponse = DemoUtil.callUrl(urlString, hpciRequestParamMap);
 
-		// Uses the parseQueryString method to collect the response from HostedPCI
-		// And pass the resulting map in a parameter "map" to be used in the
-		// webCheckoutConfirmation.jsp file
-		request.setAttribute("map", DemoUtil.parseQueryString(callResponse));
-
-		// Create a map to be returned to the client's browser at the end
-		Map<String, String> globalMap = new LinkedHashMap<String, String>();
-		globalMap.put("cardNumber", cardNumber);
-		globalMap.put("cardCVV", cardCVV);
-		globalMap.put("merchantRefId", merchantRefId);
-		globalMap.put("amount", amount);
-		globalMap.put("comments", comments);
-		// Send globalMap to the response page
-		request.setAttribute("globalMap", globalMap);
-			
-		// Pass all the information that was collected to the confirmation page
-		// "webCheckoutConfirmation.jsp"
-		request.getRequestDispatcher("/webCheckoutConfirmation.jsp").forward(request, response);
-	
-
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Pragma", "no-cache");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html");
+		
+		// Call HPCI using the populated map and action url string			
+		PrintWriter out = response.getWriter();
+		
+		out.print(callResponse);	
 		// END: of doPost
 	}
 }

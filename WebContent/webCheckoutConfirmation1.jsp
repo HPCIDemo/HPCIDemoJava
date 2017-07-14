@@ -12,14 +12,14 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
 	rel="stylesheet">
 <link
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"
 	rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost = "https://ccframe.hostedpci.com";
+	var hpciCCFrameHost;
 	var hpciCCFrameFullUrl ;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 
@@ -102,15 +102,15 @@ $(document).ready(function () {
     		    }
     			siteId = resultMap["sid"];
     			locationName = resultMap["locationName"]; 
-    			fullParentQStr = "/webCheckoutConfirmation1.jsp";
+    			fullParentQStr = location.pathname;
     			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
-    					
+    			hpciCCFrameHost = resultMap["serviceUrl"];		
     			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
     			console.log(location.pathname);
     			console.log("SiteId :" + siteId);
     			console.log("LocationName :" +locationName);  
     			
-    			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    			hpciCCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
     				    +"locationName="+locationName
     				    +"&sid=" + siteId
     				    +"&reportCCType=Y"
@@ -132,12 +132,19 @@ $(document).ready(function () {
 <!-- container class sets the page to use 100% width -->
 <div class="container">
 	<!-- row class sets the margins -->
-	<div class="row">
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
 		<div class="col-md-7 col-centered">
+			<div class="demo-navbar">
+				<div class="row">
+					<ul>
+						<li><a href="home.jsp">Home</a></li>
+						<li><a id = "hostedPCI" href="http://www.hostedpci.com/"></a></li>
+					</ul>
+				</div>
+			</div>
 			<form id="CCAcceptForm" action="/Iframe3DSecServlet" method="post">
 			<input type="hidden" name="action" value="form3DSecResponse">
-				<section style="margin: 10px;">
+				<section>
 					<fieldset style="min-height: 100px;">
 						<!-- Form Name -->
 						<legend>Web Checkout</legend>
@@ -150,7 +157,11 @@ $(document).ready(function () {
 							<label>*******************</label><br />
 							<c:choose>
 								<c:when test="${map['pxyResponse.threeDSEnrolled'].equals('Y')}">
-									<iframe seamless id="threeDSecFrame" name="threeDSecFrame" onload="receivePINMsg()" src="https://ccframe.hostedpci.com/iSynSApp/appUserVerify3DResp!verificationForm.action?sid=${globalMap['siteId']}&authTxnId=${map['pxyResponse.threeDSTransactionId']}&fullParentHost=${globalMap['fullParentHost']}&fullParentQStr=/webCheckoutConfirmation1.jsp" width=450 height=400 style="border:none">
+									<iframe seamless id="threeDSecFrame" name="threeDSecFrame" onload="receivePINMsg()" 
+										src="${globalMap['serviceUrl']}/iSynSApp/appUserVerify3DResp!verificationForm.action?
+											sid=${globalMap['siteId']}&authTxnId=${map['pxyResponse.threeDSTransactionId']}
+											&fullParentHost=${globalMap['fullParentHost']}&fullParentQStr=/webCheckoutConfirmation1.jsp" 
+											width=450 height=400 style="border:none">
 									If you can see this, your browser doesn't understand IFRAME.
 									</iframe>
 									<br />
@@ -198,7 +209,6 @@ $(document).ready(function () {
 				</section>
 			</form>
 		</div><!-- col-md-7 col-centered -->
-	</div><!-- row -->
 </div><!-- container -->
 </body>
 </html>

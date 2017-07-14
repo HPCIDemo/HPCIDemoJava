@@ -4,10 +4,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>HostedPCI Demo App Web Checkout Payment Page</title>
+<title>HostedPCI Demo App iFrame Gateway Tokenization</title>
 <!-- Bootstrap -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
 
 <!-- Font-Awesome -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -18,7 +18,7 @@
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost = "https://ccframe.hostedpci.com";
+	var hpciCCFrameHost;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
 	var hpciCCFrameFullUrl;
 	var hpciExpMonthName = "ccExpMonth";
@@ -111,10 +111,10 @@
 		
 		// Custom validation to only accept certain card types
 		if(hpciCCTypeValue == "visa" || hpciCCTypeValue == "mastercard" || hpciCCTypeValue == "na") {
-			document.getElementById("submitButton").disabled = false;
+			document.getElementById("tokenizeButton").disabled = false;
 			document.getElementById("errorMessage2").style.display = "none";
 		} else {
-			document.getElementById("submitButton").disabled = true;
+			document.getElementById("tokenizeButton").disabled = true;
 			document.getElementById("errorMessage2").style.display = "block";
 		}
 	}
@@ -162,13 +162,14 @@ jQuery(document).ready(function() {
     			locationName = resultMap["locationName"]; 
     			fullParentQStr = location.pathname;
     			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    			hpciCCFrameHost = resultMap["serviceUrl"];
     			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
     			console.log(location.pathname);
     			console.log("SiteId :" + siteId);
     			console.log("LocationName :" +locationName);
     		
     			
-    			hpciCCFrameFullUrl = "https://ccframe.hostedpci.com/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+    			hpciCCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
     				    +"locationName="+locationName
     				    +"&sid=" + siteId
     				    +"&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
@@ -199,6 +200,14 @@ jQuery(document).ready(function() {
 	<div class="form-group">
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
 		<div class="col-md-7 col-centered">
+			<div class="demo-navbar">
+				<div class="row">
+					<ul>
+						<li><a href="home.jsp">Home</a></li>
+						<li><a id = "hostedPCI" href="http://www.hostedpci.com/"></a></li>
+					</ul>
+				</div>
+			</div>
 			<!-- IMPORTANT: id CCAcceptForm needs to match the ID's in the HostedPCI script code -->
 			<!-- So if you change this ID, make sure to change it in all other places -->
 			<!-- Action points to the servlet -->
@@ -273,7 +282,6 @@ jQuery(document).ready(function() {
 							<div class="col-xs-2 col-sm-2 col-md-2">		
 								<!-- id is used in confirmation.jsp -->
 								<select id="ccExpYear" name="ccExpYear" class="selectpicker">
-									<option value="16">2016</option>
 									<option value="17">2017</option>
 									<option value="18">2018</option>
 									<option value="19">2019</option>
@@ -284,6 +292,8 @@ jQuery(document).ready(function() {
 									<option value="24">2024</option>
 									<option value="25">2025</option>
 									<option value="26">2026</option>
+									<option value="27">2027</option>
+									<option value="28">2028</option>
 								</select>
 							</div>
 						</div><!-- form-group -->
@@ -308,18 +318,14 @@ jQuery(document).ready(function() {
 							</div>
 						</div>
 						<div class="btn-group btn-group-justified" role="group" >
-								<div class="btn-group" role="group">
+								<div class="col-xs-6 col-sm-3 col-md-4">
 									<!-- Submit button -->
-									<button type="button" value="Submit" id="submitButton" class="btn btn-primary" id="tokenizeButton"
+									<button type="button" value="Submit" class="btn btn-primary" id="tokenizeButton"
 										onClick='return sendHPCIMsg();'>Tokenize Credit Card</button>
 								</div>
-								<div class="btn-group" role="group">
+								<div class="col-xs-6 col-sm-3 col-md-4">
 									<!-- Reset button -->
 									<button id="formResetButton" type="button" value="Reset form" class="btn btn-primary">Reset Form</button>
-								</div>
-								<div class="btn-group" role="group">
-									<!-- Back button -->
-									<input Type="button" class="btn btn-primary " value="Back" onClick="location.assign('home.jsp');"></input>
 								</div>
 						</div>
 						<br />
