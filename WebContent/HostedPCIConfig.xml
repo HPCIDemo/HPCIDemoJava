@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>HostedPCI connection configuration</comment>
+<entry key="apiType">pxyhpci</entry>
+<entry key="apiVersion">1.0.1</entry>
+<entry key="locationName">javasample2</entry>
+<entry key="cvvOnlyLocationName">checkout1cvvonly</entry>
+<entry key="name">HostedPCI configuration</entry>
+<entry key="sid">528160</entry>
+<entry key="userName">sampqa1stgAdmAPI</entry>
+<entry key="userPassKey">.OQdIHVtVJSg-W-Zr40QQGY1xyhvGjUH</entry>
+<entry key="serviceUrl">https://ccframe.hostedpci.com</entry>
+<entry key="apiServiceUrl">https://apiservice.hostedpci.com</entry>
+<entry key="currency">Canadian Dollar=CAD/US Dollar=USD</entry>
+<entry key="paymentProfile">DEF - Currency: USD=DEF/MONERIS - Currency: CAD=DEF_MONERIS/MONERIS - Currency: USD=DEF_MONERIS/CARDCONNECT(Gtw token)=DEF_CARDCONNECT</entry>
+<entry key="securePaymentProfile">3DSEC - Currency: USD=DEF_3DSEC</entry>
+</properties>
