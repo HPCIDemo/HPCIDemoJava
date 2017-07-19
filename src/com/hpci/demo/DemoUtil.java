@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class DemoUtil {
 	// (key,value)
 	public static String callUrl(String urlString, Map<String, String> paramMap) {
 		String urlReturnValue = "";
+		URLConnection conn = null;
 		try {
 			// Construct data
 			StringBuffer dataBuf = new StringBuffer();
@@ -38,7 +40,7 @@ public class DemoUtil {
 
 			// Send data
 			URL url = new URL(urlString);
-			URLConnection conn = url.openConnection();
+			conn = url.openConnection();
 			conn.setDoOutput(true);
 			OutputStreamWriter wr = new OutputStreamWriter(
 					conn.getOutputStream());
@@ -57,6 +59,12 @@ public class DemoUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			urlReturnValue = "";
+			Map<String, List<String>> map = conn.getHeaderFields();
+			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+				System.out.println("Key : " + entry.getKey() +
+			                 " ,Value : " + entry.getValue());
+			}
+			return map.toString();
 		}
 		return urlReturnValue;
 		
@@ -129,7 +137,7 @@ public class DemoUtil {
 				System.out.println(property + "=" + value);
 				mapConfig.put(property, value);
 			}
-			
+			System.out.println("#####################################");
 			return mapConfig;			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

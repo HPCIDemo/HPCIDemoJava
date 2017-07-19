@@ -3,7 +3,9 @@ package com.hpci.demo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -11,9 +13,10 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -33,8 +36,8 @@ public class FileDispatchServlet extends HttpServlet {
 	private static final String PXY_MSGDISPATCH = "/iSynSApp/paymentFileDispatch.action";
 	
 	private static final String PXYPARAM_APIVERSION = "apiVersion";
-	private static final String PXYPARAM_APIVERSION_NUM = "1.0.1"
-;	private static final String PXYPARAM_APITYPE = "apiType";
+	private static final String PXYPARAM_APIVERSION_NUM = "1.0.1";	
+	private static final String PXYPARAM_APITYPE = "apiType";
 	private static final String PXYPARAM_APITYPE_PXYHPCI = "pxyhpci";
 	private static final String PXYPARAM_DISPATCHREQUEST_PROFILENAME = "dispatchRequest.profileName";
 	private static final String PXYPARAM_DISPATCHREQUEST_DESTFILENAME = "dispatchRequest.destFileName";
@@ -75,13 +78,14 @@ public class FileDispatchServlet extends HttpServlet {
 		
 		String urlReturnValue = "";
 		String charset = "UTF-8";
+		URLConnection connection = null;
 		
 		String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
 		String CRLF = "\r\n"; // Line separator required by multipart/form-data.
 
 		try {
 
-			URLConnection connection = new URL(urlString).openConnection();
+			connection = new URL(urlString).openConnection();
 			connection.setDoOutput(true);
 			connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 			PrintWriter writer = null;
@@ -132,6 +136,12 @@ public class FileDispatchServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			urlReturnValue = "";
+			Map<String, List<String>> map = connection.getHeaderFields();
+			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+				System.out.println("Key : " + entry.getKey() +
+			                 " ,Value : " + entry.getValue());
+			}
+			return map.toString();
 		}	
 		return urlReturnValue;
 	}
@@ -180,6 +190,21 @@ public class FileDispatchServlet extends HttpServlet {
 		return callResult;
 	}
 	
+	private void copyInputStreamToFile( InputStream in, File file ) {
+	    try {
+	        OutputStream out = new FileOutputStream(file);
+	        byte[] buf = new byte[1024];
+	        int len;
+	        while((len=in.read(buf))>0){
+	            out.write(buf,0,len);
+	        }
+	        out.close();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        logMessage("Error coping the multipart file.");
+	    }
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -217,15 +242,11 @@ public class FileDispatchServlet extends HttpServlet {
 		String destFileName = request.getParameter(PXYPARAM_DISPATCHREQUEST_DESTFILENAME);
 		String profileName = request.getParameter(PXYPARAM_DISPATCHREQUEST_PROFILENAME);
 		
-		String filePath = getServletContext().getRealPath("/WEB-INF") + "/" + fileName;
-		if (fileName != null && !fileName.isEmpty()) {
-			//Save file
-			part.write(filePath);
-		}
-		File dispatchFile = new File(filePath);
+		String tempFileName = fileName.substring(0, fileName.lastIndexOf("."));
+		String tempFileNameExt = fileName.substring(fileName.lastIndexOf("."));
 		
-		String callResult = dispatchOnly(serviceUrl, userName, userPassKey, fileName, destFileName, 
-				dispatchFile, profileName);
+		logMessage("tempFileName:" + tempFileName);
+		logMessage("tempFileNameExt:" + tempFileNameExt);
 		
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Pragma", "no-cache");
@@ -233,7 +254,29 @@ public class FileDispatchServlet extends HttpServlet {
 		response.setContentType("text/html");
 
 		PrintWriter out = response.getWriter();
+		
+		String systemTempDirPath = System.getProperty("java.io.tmpdir");
+		
+		//Set servlet context tempdir attribute
+		getServletContext().setAttribute(ServletContext.TEMPDIR, systemTempDirPath);
+		//Create a temp file for storing the multipart data
+		File tempFile = File.createTempFile(tempFileName, tempFileNameExt, new File(systemTempDirPath));
+		String filePath = tempFile.toString();
+		logMessage("File path: " + filePath);
+		if (fileName != null && !fileName.isEmpty()) {
+			//Save file
+			copyInputStreamToFile(part.getInputStream(), tempFile);
+		}
+		
+		File dispatchFile = new File(filePath);
+		if(!dispatchFile.exists()){
+			out.print("Error uploading the file.");
+			return;
+		}
 
+		String callResult = dispatchOnly(serviceUrl, userName, userPassKey, fileName, destFileName, 
+				dispatchFile, profileName);
+		
 		// Initiate the call back
 		out.print(callResult);
 	}
