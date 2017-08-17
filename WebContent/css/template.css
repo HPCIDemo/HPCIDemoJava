@@ -18,7 +18,6 @@ fieldset {
 	background: white;
 	border-radius: 5px;
 	padding: 15px;
-	margin-right: -15px;
 	margin-top: 10px;
 }
 
@@ -55,19 +54,6 @@ fieldset legend {
     background-color: #F8F8F8;
     display:none;
 }
-.file-dispatch-wizard .payment-msg-dispatch-wizard .container {
-	margin-top: 40px;
-}
-
-.file-dispatch-wizard .cvvonly-wizard .payment-msg-dispatch-wizard, form {
-	margin-top: 10px;
-}
-
-.file-dispatch-wizard .cvvonly-wizard .payment-msg-dispatch-wizard, .row {
-	background-color: #f1f1f1;
-	margin-top: 10px;
-	text-align: center;
-}
 
 .btn {
 	position: relative;
@@ -80,14 +66,6 @@ fieldset legend {
 .input-group-addon {
 	min-width: 230px;
 	text-align: right;
-}
-
-.file-dispatch-wizard .cvvonly-wizard , fieldset legend {
-	font-size: 22px;
-}
-
-.payment-msg-dispatch-wizard fieldset legend {
-	font-size: 20px;
 }
 
 /* Center the loader */
@@ -133,20 +111,11 @@ fieldset legend {
 
 .form-section {
   padding-left: 15px;
-  display: none;
+  
 }
 
 .form-section.current {
   display: inherit;
-}
-
-.file-dispatch-wizard .cvvonly-wizard .payment-msg-dispatch-wizard, .btn-info, .btn-default {
-  margin-top: 10px;
-  font-size: 18px;
-  width: 175px;
-  background: rgba(255,175,75,1);
-  padding: 10px 16px;
-  border-color: white;
 }
 
 body .fa {
@@ -182,6 +151,7 @@ body .fa {
 
 .demo-navbar{
 	padding-left: 15px;
+	background-color: #f1f1f1;
 }
 
 .demo-navbar ul {

@@ -57,9 +57,13 @@ public class CvvOnlyIframeServlet extends HttpServlet {
 			PrintWriter out = response.getWriter();
 
 			// Initiate the call back
-			out.print("sid;" + mapConfig.get("sid") + "," + "locationName;" + mapConfig.get("locationName") + ","
-					 + "serviceUrl;" + mapConfig.get("serviceUrl") + ","
-					 + "cvvOnlyLocationName;" + mapConfig.get("cvvOnlyLocationName"));
+			out.print("sid;" + mapConfig.get("sid") 
+					 + "," + "locationName;" + mapConfig.get("locationName") 
+					 + "," + "serviceUrl;" + mapConfig.get("serviceUrl")
+					 + "," + "cvvOnlyLocationName;" + mapConfig.get("cvvOnlyLocationName")
+					 + "," + "ccNum;" + mapConfig.get("ccToken")
+					 + "," + "currency;" + mapConfig.get("currency")
+					 + "," +"paymentProfile;" + mapConfig.get("paymentProfile"));
 		}
 	}
 

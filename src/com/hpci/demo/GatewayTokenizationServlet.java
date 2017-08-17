@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/GatewayTokenizationServlet")
 public class GatewayTokenizationServlet extends HttpServlet {
 	private final String PXY_GATEWAY_TOKEN = "/iSynSApp/paymentGatewayToken.action";
-	private String cardNumber = "";
+	private String ccNum = "";
+	private String ccCVV = "";
 	private String flag = "";
 	private Map<String, String> mapConfig ;
 	
@@ -58,7 +59,8 @@ public class GatewayTokenizationServlet extends HttpServlet {
 
 		// Get request parameters from form.jsp (all the attributes that the
 		// user inputs)
-		cardNumber = request.getParameter("ccNum");
+		ccNum = request.getParameter("ccNum");
+		ccCVV = request.getParameter("ccCVV");
 		String expiryMonth = request.getParameter("expiryMonth");
 		String expiryYear = request.getParameter("expiryYear");
 		String firstName = request.getParameter("firstName");
@@ -80,7 +82,8 @@ public class GatewayTokenizationServlet extends HttpServlet {
 
 		// Continue to populate hpciRequestParamMap with all the required
 		// information
-		hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", cardNumber);
+		hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", ccNum);
+		hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", ccCVV);
 		hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
 		hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
 		hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);

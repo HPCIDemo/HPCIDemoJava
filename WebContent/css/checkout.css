@@ -214,7 +214,7 @@ label, label>* {
 }
 
 .gtySummary{
-	display: none	
+	display: none;
 }
 
 .message{
@@ -276,4 +276,53 @@ li #hostedPCI {
 .demo-navbar li a:hover {
     background-color: #555;
     color: white;
+}
+
+/* Center the loader */
+#loader {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	z-index: 1;
+	width: 150px;
+	height: 150px;
+	margin: -75px 0 0 -75px;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #3498db;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin { 
+	0% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin { 
+	0% {transform: rotate(0deg);}
+	100% {transform: rotate(360deg);}
+}
+
+#modal {
+	position: fixed;
+	z-index: 999;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background-color: Black;
+	filter: alpha(opacity = 60);
+	opacity: 0.6;
+	-moz-opacity: 0.8;
+}
+
+#message, #message1, #message2{
+	word-wrap: break-word;
+    max-width: 823px;
+    border-radius: 4px;
+    background-color: #F8F8F8;
+    display:none;
 }

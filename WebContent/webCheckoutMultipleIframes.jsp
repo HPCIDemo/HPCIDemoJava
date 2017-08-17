@@ -121,14 +121,9 @@
 	}
 
 	function submitForm() {
-		console.log("submit");
-		jQuery('#trSummary').show();
+		console.log("Submitting the form...");
 		deferred.done(
 				function() {
-					jQuery('#trSummary').html(
-							jQuery('#trSummary').html()
-									+ 'The tokenization process is completed.'
-									+ "<br/>");
 					processPayment();
 				}).fail(
 				function() {
@@ -142,49 +137,50 @@
 	}
 
 	function processPayment() {
-		for (i = 0; i < iframes.length; i++) {
-			jQuery
-					.post(
+		var merchantRefId;
+		var counter;
+		for (counter = 0; counter < iframes.length; counter++) {
+			merchantRefId = new Date().valueOf();
+			(function(counter){
+				jQuery.post(
 							"MultipleIframesServlet",
 							{
-								"ccNum" : jQuery("#ccNum" + (i + 1)).val(),
-								"ccCVV" : jQuery("#ccCVV" + (i + 1)).val(),
-								"amount" : jQuery("#amount" + (i + 1)).val(),
-								"merchantRefId" : new Date().valueOf(),
+								"ccNum" : jQuery("#ccNum" + (counter + 1)).val(),
+								"ccCVV" : jQuery("#ccCVV" + (counter + 1)).val(),
+								"amount" : jQuery("#amount" + (counter + 1)).val(),
+								"merchantRefId" : merchantRefId,
 								"currency" : "CAD",
 								"paymentProfile" : "DEF",
-								"expiryMonth" : jQuery("#expiryMonth" + (i + 1))
-										.val(),
-								"expiryYear" : jQuery("#expiryYear" + (i + 1))
-										.val(),
-
+								"expiryMonth" : jQuery("#expiryMonth" + (counter + 1)).val(),
+								"expiryYear" : jQuery("#expiryYear" + (counter + 1)).val()
 							},
 							function(data) {
 								//parse the result
-								var resultMap = parseQueryString(data);
-
+								var resultMap = parseQueryString(decodeURIComponent(data.replace(/\+/g,  " ")));
 								if (data != undefined) {
-									jQuery('#trSummary')
-											.html(
-													jQuery('#trSummary').html()
-															+ "====================================================="
-															+ "<br/>");
-									jQuery('#trSummary')
-											.html(
-													jQuery('#trSummary').html()
-															+ "Processing the payment.."
-															+ "<br/>"
-															+ "Transaction result: "
-															+ resultMap["status"]
-															+ "<br/>");
-									jQuery('#trSummary').html(
-											jQuery('#trSummary').html() + data
+									jQuery('#result' + (counter + 1)).html(
+											jQuery('#result' + (counter + 1)).html()
+													+ "====================================================="
 													+ "<br/>");
-
+									jQuery("#result" + (counter + 1)).html(
+											 jQuery('#result' + (counter + 1)).html() +
+											 "Status: " + resultMap["status"] + "<br/>"
+											 + "Description: " + resultMap["pxyResponse.responseStatus.description"] + "<br/>"
+											 + "Processor Reference ID: " + resultMap["pxyResponse.processorRefId"] + "<br/>"
+											 + "Merchant ID: " + merchantRefId + "<br/>"
+											 + "Token Card Number: " + jQuery("#ccNum" + (counter + 1)).val() + "<br/>"
+											 + "Token CVV Number: " + jQuery("#ccCVV" + (counter + 1)).val() + "<br/>"
+											);
+									jQuery("#message" + (counter + 1)).html("Full Message: " + "<br/>" 
+												+ decodeURIComponent(data));
+									if(counter == 1){
+										jQuery('#checkout').hide();
+										jQuery('#trSummary').show();
+									}
 								}
 							});
+			})(counter);
 		}
-
 	}
 	function hasNextIframe() {
 		return (++iframeCounter < iframes.length) ? iframeCounter : false;
@@ -207,135 +203,145 @@
 		}
 
 		return resultMap;
-	}
+	}	
 </script>
 
 <script type="text/javascript">
-	jQuery(document)
-			.ready(
-					function() {
-						deferred = $.Deferred();
+	jQuery(document).ready(function() {
+			deferred = $.Deferred();
 
-						jQuery
-								.get(
-										//"IframeServlet",
-										"MultipleIframesServlet",
-										{
-											flag : flag,
-										},
-										function(data) {
-											//parse the result
-											var resultMap = [], queryToken;
-											if (data != undefined) {
-												queryTokenList = data
-														.split(',');
-												for (var i = 0; i < queryTokenList.length; i++) {
-													queryToken = queryTokenList[i]
-															.split(';');
-													resultMap
-															.push(queryToken[1]);
-													resultMap[queryToken[0]] = queryToken[1];
-												}
-											}
-											siteId = resultMap["sid"];
-											locationName = resultMap["locationName"];
-											fullParentQStr = location.pathname;
-											fullParentHost = location.protocol
-													.concat("//")
-													+ window.location.hostname
-													+ ":" + location.port;
-											hpciCCFrameHost = resultMap["serviceUrl"];
-											
-											console.log(location.protocol
-													.concat("//")
-													+ window.location.hostname
-													+ ":" + location.port);
-											console.log(location.pathname);
-											console.log("SiteId :" + siteId);
-											console.log("LocationName :"
-													+ locationName);
+			jQuery(document).ajaxSend(function(event, request, settings) {
+				jQuery('#modal').show();
+			});
+		    jQuery(document).ajaxComplete(function(event, request, settings) {
+				jQuery('#modal').hide();
+			});
+		    
+			jQuery.get(
+					//"IframeServlet",
+					"MultipleIframesServlet",
+					{
+						flag : flag,
+					},
+					function(data) {
+						//parse the result
+						var resultMap = [], queryToken;
+						if (data != undefined) {
+							queryTokenList = data
+									.split(',');
+							for (var i = 0; i < queryTokenList.length; i++) {
+								queryToken = queryTokenList[i]
+										.split(';');
+								resultMap
+										.push(queryToken[1]);
+								resultMap[queryToken[0]] = queryToken[1];
+							}
+						}
+						siteId = resultMap["sid"];
+						locationName = resultMap["locationName"];
+						fullParentQStr = location.pathname;
+						fullParentHost = location.protocol
+								.concat("//")
+								+ window.location.hostname
+								+ ":" + location.port;
+						hpciCCFrameHost = resultMap["serviceUrl"];
+						
+						console.log(location.protocol
+								.concat("//")
+								+ window.location.hostname
+								+ ":" + location.port);
+						console.log(location.pathname);
+						console.log("SiteId :" + siteId);
+						console.log("LocationName :"
+								+ locationName);
 
-											iframes = jQuery("iframe");
-											//Set the "src" attribute for the Hpci iframe
-											for (i = 0; i < iframes.length; i++) {
-												CCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
-														+ "locationName="
-														+ locationName
-														+ "&sid="
-														+ siteId
-														//	+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
-														+ "&ccNumTokenIdx="
-														+ (i + 1)
-														+ "&fullParentHost="
-														+ fullParentHost
-														+ "&fullParentQStr="
-														+ fullParentQStr;
+						iframes = jQuery("iframe");
+						//Set the "src" attribute for the Hpci iframe
+						for (i = 0; i < iframes.length; i++) {
+							CCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
+									+ "locationName="
+									+ locationName
+									+ "&sid="
+									+ siteId
+									//	+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
+									+ "&ccNumTokenIdx="
+									+ (i + 1)
+									+ "&fullParentHost="
+									+ fullParentHost
+									+ "&fullParentQStr="
+									+ fullParentQStr;
 
-												jQuery("#" + iframes[i].id)
-														.attr("src",
-																CCFrameFullUrl);
+									jQuery("#" + iframes[i].id)
+											.attr("src",
+													CCFrameFullUrl);
 
-												console.log("Iframe " + (i + 1)
-														+ " src param: "
-														+ CCFrameFullUrl);
+									console.log("Iframe " + (i + 1)
+											+ " src param: "
+											+ CCFrameFullUrl);
 
-												if (i == 0) {
-													//Set the first iframe for a credit card tokenization
-													hpciCCFrameFullUrl = CCFrameFullUrl;
-													hpciCCFrameName = iframes[i].id;
-												}
-
-											}
-											console.log(iframes);
-
-										});
-
-						jQuery('#paymentResetButton')
-								.click(
-										function resetPayment() {
-											jQuery('#CCAcceptForm').trigger(
-													'reset');
-											//Reset iframes
-											for (i = 0; i < iframes.length; i++) {
-												jQuery("#" + iframes[i].id)
-														.attr(
-																"src",
-																jQuery(
-																		"#"
-																				+ iframes[i].id)
-																		.attr(
-																				"src"));
-												jQuery('#trSummary' + (i + 1))
-														.html("");
-											}
-											// Set the name of the iframe containing the credit card
-											hpciCCFrameName = iframes[0].id;
-											jQuery('#trSummary').hide();
-										});
-
-						jQuery('#submitBtn').click(function() {
-							submitForm();
+									if (i == 0) {
+										//Set the first iframe for a credit card tokenization
+										hpciCCFrameFullUrl = CCFrameFullUrl;
+										hpciCCFrameName = iframes[i].id;
+									}
+								}
+								console.log(iframes);
 						});
 
-						jQuery('input:text')
-								.on(
-										'blur',
-										function() {
-											if (jQuery(this).val()) {
-												jQuery(this)
-														.attr("class",
-																"input-text__input input-text__input--populated");
-											} else {
-												jQuery(this).attr("class", "");
-											}
-											;
-										});
-					});
+			jQuery('#paymentResetButton').click(
+							function resetPayment() {
+								jQuery('#CCAcceptForm').trigger('reset');
+								//Reset iframes
+								for (i = 0; i < iframes.length; i++) {
+									jQuery("#" + iframes[i].id)
+											.attr("src", jQuery("#"+ iframes[i].id).attr("src"));
+									jQuery('#trSummary' + (i + 1)).html("");
+								}
+								// Set the name of the iframe containing the credit card
+								hpciCCFrameName = iframes[0].id;
+								jQuery('#trSummary').hide();
+							});
+
+			jQuery('#submitBtn').click(function() {
+				submitForm();
+			});
+
+			jQuery('#backBtn').click(function () {
+				location.reload(true);
+			});
+			
+			jQuery('#noButton1').click(function () {
+				jQuery('#message1').hide('slow');
+			});
+			
+			jQuery('#yesButton1').click(function () {
+				jQuery('#message1').show('slow');
+			});
+			
+			jQuery('#noButton2').click(function () {
+				jQuery('#message2').hide('slow');
+			});
+			
+			jQuery('#yesButton2').click(function () {
+				jQuery('#message2').show('slow');
+			}); 
+			
+			jQuery('input:text').on('blur', function() {
+				if (jQuery(this).val()) {
+					jQuery(this).attr("class", "input-text__input input-text__input--populated");
+				} else {
+					jQuery(this).attr("class", "");
+				}
+			});
+		});
 </script>
 </head>
 <body>
 	<!-- container class sets the page to use 100% width -->
 	<div class="container">
+		<div id = "modal" style="display: none">
+			<div id = "loader"></div>
+		</div>
 		<div>
 			<!-- form-group class sets the margins on the sides -->
 			<div class="form-group">
@@ -354,7 +360,7 @@
 					<!-- Action points to the servlet -->
 					<form id="CCAcceptForm" action="/IframeServlet" method="post"
 						class="form-horizontal">
-						<fieldset>
+						<fieldset id = "checkout">
 							<!-- Form Name -->
 							<legend>Web Checkout Multiple Iframes</legend>
 							<fieldset>
@@ -520,8 +526,31 @@
 								</div>
 								<br />
 							</fieldset>
+						</fieldset><!-- Outer fieldset -->
+						<fieldset id="trSummary">
+							<legend>Transaction Summary</legend>					
+							<div id = "result1">
+							</div>
+							<br/>
+							<label>Show Full Message?</label><br />
+							<input id ="noButton1" type = "radio" name="yesNo1" checked="checked"/>
+							<label for = "noButton1">No</label>
+							<input id="yesButton1" type="radio" name="yesNo1" />
+							<label for = "yesNoButton1">Yes</label>
+							<div id = "message1" style="word-wrap: break-word;">
+							</div><br/><br/>
+							<div id = "result2">
+							</div>
+							<br/>
+							<label>Show Full Message?</label><br />
+							<input id ="noButton2" type = "radio" name="yesNo2" checked="checked"/>
+							<label for = "noButton2">No</label>
+							<input id="yesButton2" type="radio" name="yesNo2" />
+							<label for = "yesNoButton2">Yes</label>
+							<div id = "message2" style="word-wrap: break-word;">
+							</div><br/><br/>
+							<br /> <input Type="button"  id = "backBtn" class="btn btn-primary" value="Back"></input><br />
 						</fieldset>
-						<!-- Outer fieldset -->
 					</form>
 				</div>
 				<!-- col-md-7 col-centered -->
@@ -529,7 +558,7 @@
 			<!-- form-group -->
 		</div>
 		<br />
-		<div id="trSummary" class="col-md-7 col-centered"></div>
+		
 	</div>
 	<!-- container -->
 </body>

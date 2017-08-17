@@ -1,9 +1,8 @@
 package com.hpci.demo;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -74,8 +72,8 @@ public class FileDispatchServlet extends HttpServlet {
 	}
 	
 	public static String callUrl(String urlString, Map<String, String> paramMap, String fileName,
-			File dispatchFile) {
-		
+			InputStream dispatchFileStream) {
+
 		String urlReturnValue = "";
 		String charset = "UTF-8";
 		URLConnection connection = null;
@@ -110,8 +108,8 @@ public class FileDispatchServlet extends HttpServlet {
 			    writer.append(CRLF).flush();
 			    BufferedReader reader = null;
 			    try {
-			        reader = new BufferedReader(new InputStreamReader(new FileInputStream(dispatchFile), charset));
-			    		for (String line; (line = reader.readLine()) != null;) {
+			        reader = new BufferedReader(new InputStreamReader(dispatchFileStream, charset));
+			        for (String line; (line = reader.readLine()) != null;) {
 			            writer.append(line).append(CRLF);
 			        }
 			    } finally {
@@ -147,7 +145,8 @@ public class FileDispatchServlet extends HttpServlet {
 	}
 	
 	private String dispatchOnly(String serviceUrl, String userName, String userPassKey, String fileName,
-			String destFileName, File dispatchFile, String profileName) {
+			String destFileName, InputStream dispatchFileStream, String profileName) {
+
 		// make the remote call
 		String callUrl = serviceUrl + PXY_MSGDISPATCH;
 		
@@ -164,7 +163,7 @@ public class FileDispatchServlet extends HttpServlet {
 	    logMessage("========================================================");
 		logMessage("Make the call: " + callUrl);
 		logMessage("Call payload: " + paramMap);
-		String callResult = callUrl(callUrl, paramMap, fileName, dispatchFile);
+		String callResult = callUrl(callUrl, paramMap, fileName, dispatchFileStream);
 		logMessage("Call result:" + callResult);
 		
 		// parse the url encoded key value pairs
@@ -190,19 +189,27 @@ public class FileDispatchServlet extends HttpServlet {
 		return callResult;
 	}
 	
-	private void copyInputStreamToFile( InputStream in, File file ) {
-	    try {
-	        OutputStream out = new FileOutputStream(file);
-	        byte[] buf = new byte[1024];
-	        int len;
-	        while((len=in.read(buf))>0){
-	            out.write(buf,0,len);
-	        }
-	        out.close();
+	private InputStream copyInputStream( InputStream input) {
+		InputStream inFileStream = null;
+		
+		try {
+	    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    		
+	    		byte[] buffer = new byte[1024];
+	    		int len;
+	    		while ((len = input.read(buffer)) > -1 ) {
+	    		    baos.write(buffer, 0, len);
+	    		}
+	    		baos.flush();
+	    		
+	    		inFileStream = new ByteArrayInputStream(baos.toByteArray()); 
+	    		
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        logMessage("Error coping the multipart file.");
 	    }
+		
+		return inFileStream;
 	}
 	
 	@Override
@@ -225,7 +232,8 @@ public class FileDispatchServlet extends HttpServlet {
 
 			// Initiate the call back
 			out.print("sid;" + mapConfig.get(PROPERTY_SID) + "," + "locationName;" + mapConfig.get(PROPERTY_LOCATION_NAME) + ","
-					+ "serviceUrl;" + mapConfig.get(PROPERTY_SERVICE_URL));
+					+ "serviceUrl;" + mapConfig.get(PROPERTY_SERVICE_URL)
+					+","+"paymentProfile;" + mapConfig.get("paymentProfile"));
 		}
 	}
 
@@ -233,6 +241,7 @@ public class FileDispatchServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		InputStream dispatchFileStream = null;
 		Part part = request.getPart("tokenFile");
 		
 		String serviceUrl = mapConfig.get(PROPERTY_API_SERVICE_URL);
@@ -242,12 +251,6 @@ public class FileDispatchServlet extends HttpServlet {
 		String destFileName = request.getParameter(PXYPARAM_DISPATCHREQUEST_DESTFILENAME);
 		String profileName = request.getParameter(PXYPARAM_DISPATCHREQUEST_PROFILENAME);
 		
-		String tempFileName = fileName.substring(0, fileName.lastIndexOf("."));
-		String tempFileNameExt = fileName.substring(fileName.lastIndexOf("."));
-		
-		logMessage("tempFileName:" + tempFileName);
-		logMessage("tempFileNameExt:" + tempFileNameExt);
-		
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Pragma", "no-cache");
 		response.setCharacterEncoding("utf-8");
@@ -255,27 +258,18 @@ public class FileDispatchServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		
-		String systemTempDirPath = System.getProperty("java.io.tmpdir");
-		
-		//Set servlet context tempdir attribute
-		getServletContext().setAttribute(ServletContext.TEMPDIR, systemTempDirPath);
-		//Create a temp file for storing the multipart data
-		File tempFile = File.createTempFile(tempFileName, tempFileNameExt, new File(systemTempDirPath));
-		String filePath = tempFile.toString();
-		logMessage("File path: " + filePath);
 		if (fileName != null && !fileName.isEmpty()) {
-			//Save file
-			copyInputStreamToFile(part.getInputStream(), tempFile);
+			//Copy file
+			dispatchFileStream = copyInputStream(part.getInputStream());
 		}
 		
-		File dispatchFile = new File(filePath);
-		if(!dispatchFile.exists()){
+		if(dispatchFileStream == null){
 			out.print("Error uploading the file.");
 			return;
 		}
 
 		String callResult = dispatchOnly(serviceUrl, userName, userPassKey, fileName, destFileName, 
-				dispatchFile, profileName);
+				dispatchFileStream, profileName);
 		
 		// Initiate the call back
 		out.print(callResult);

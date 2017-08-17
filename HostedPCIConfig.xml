@@ -12,7 +12,8 @@
 <entry key="userPassKey">.OQdIHVtVJSg-W-Zr40QQGY1xyhvGjUH</entry>
 <entry key="serviceUrl">https://ccframe.hostedpci.com</entry>
 <entry key="apiServiceUrl">https://apiservice.hostedpci.com</entry>
-<entry key="currency">Canadian Dollar=CAD/US Dollar=USD</entry>
-<entry key="paymentProfile">DEF - Currency: USD=DEF/MONERIS - Currency: CAD=DEF_MONERIS/MONERIS - Currency: USD=DEF_MONERIS/CARDCONNECT(Gtw token)=DEF_CARDCONNECT</entry>
+<entry key="currency">Canadian Dollar=CAD/US Dollar=USD/British Pound=GBP</entry>
+<entry key="paymentProfile">DEF - Currency: USD=DEF/MONERIS - Currency: CAD=DEF_MONERIS/MONERIS - Currency: USD=DEF_MONERIS/CARDCONNECT(Gtw token)=DEF_CARDCONNECT/DATACASH(Xml dispatch)=DISPATCHDATACASH</entry>
 <entry key="securePaymentProfile">3DSEC - Currency: USD=DEF_3DSEC</entry>
+<entry key="ccToken">4111000011301111=200</entry>
 </properties>

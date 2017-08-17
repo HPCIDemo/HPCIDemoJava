@@ -50,6 +50,8 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 	private static final String PROPERTY_LOCATION_NAME= "locationName";
 	private static final String PROPERTY_SERVICE_URL = "serviceUrl";
 	private static final String PROPERTY_SID  = "sid";
+	private static final String PROPERTY_CURRENCY = "currency";
+	private static final String PROPERTY_CC_TOKEN = "ccToken";
 	
 	private String authId;
 
@@ -113,7 +115,10 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 
 			// Initiate the call back
 			out.print("sid;" + mapConfig.get(PROPERTY_SID) + "," + "locationName;" + mapConfig.get(PROPERTY_LOCATION_NAME) + ","
-					+ "serviceUrl;" + mapConfig.get(PROPERTY_SERVICE_URL));
+					+ "serviceUrl;" + mapConfig.get(PROPERTY_SERVICE_URL)
+					+ "," + "currency;" + mapConfig.get(PROPERTY_CURRENCY)
+					+ "," +"paymentProfile;" + mapConfig.get("paymentProfile")
+					+ "," + "ccNum;" + mapConfig.get(PROPERTY_CC_TOKEN));
 		}
 	}
 

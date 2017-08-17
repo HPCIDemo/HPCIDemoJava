@@ -62,6 +62,7 @@
 		jQuery.post("GatewayTokenizationServlet",
 	    	    {
 				"ccNum": jQuery("#ccNum").val(),
+				"ccCVV": jQuery("#ccCVV").val(),
 				"expiryMonth": jQuery("#ccExpMonth").val(),
 				"expiryYear": jQuery("#ccExpYear").val(),
 				"firstName": jQuery("#firstName").val(),
@@ -80,6 +81,7 @@
 	    				}
 	    				//Display the tokenization result message.
 	    				document.getElementById("gtySummary").className = "";
+	    				document.getElementById("message").style.display = "block";
 	    				document.getElementById("message").innerHTML = "HPCI cc token: " + jQuery("#ccNum").val()  + "<br>"
 	    															+ "HPCI cvv token: " + jQuery("#ccCVV").val()  + "<br>"
 	    															+ "Gateway token: " + resultMap["pxyResponse.gatewayToken"];
