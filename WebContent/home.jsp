@@ -22,34 +22,40 @@
 						<!-- <legend>Session Information</legend> -->
 						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-5 col-centered">
-								<!-- Link to iframe demo app -->
-								<a href="/webCheckoutForm.jsp" role="button" class="btn btn-primary">Standard iFrame</a>
+								<!-- Standart iframe -->
+								<a href="/webCheckoutForm.jsp" role="button" class="btn btn-primary">Standard iframe</a>
 								<br /><br />
-								<!-- Link to iframe3dsec demo app -->
-								<a href="/webCheckoutForm3DSec.jsp" role="button" class="btn btn-primary">iFrame 3D Secure</a>
+								<!-- 3DSecure iframe -->
+								<a href="/webCheckoutForm3DSec.jsp" role="button" class="btn btn-primary">3D Secure iframe</a>
 								<br /><br />
-								<!-- Link to IVR demo app -->
-								<a href="/phoneSession.jsp" role="button" class="btn btn-primary">Phone/Call Center (IVR)</a>
+								<!-- Autofill iframe -->
+								<a href="/iframeAutofill.jsp" role="button" class="btn btn-primary">Autofill checkout</a>
 								<br /><br />
-								<!-- Link to Multiple Iframes demo app -->
-								<a href="/webCheckoutMultipleIframes.jsp" role="button" class="btn btn-primary">Multiple iFrames </a>
+								<!-- Multiple iframes -->
+								<a href="/webCheckoutMultipleIframes.jsp" role="button" class="btn btn-primary">Multiple iframes</a>
 								<br /><br />
-								<!-- Link to CvvOnly Iframe demo app -->
-								<a href="/webCheckoutCvvOnlyIframe.jsp" role="button" class="btn btn-primary">Cvv only iFrame</a>
+								<!-- Split mode -->
+								<a href="/iframeSplitMode.jsp" role="button" class="btn btn-primary">Split mode iframe</a>
 								<br /><br />
-								<!-- Link to iframe Gateway tokenization demo app -->
+								<!-- CvvOnly iframe -->
+								<a href="/webCheckoutCvvOnlyIframe.jsp" role="button" class="btn btn-primary">Cvv only iframe</a>
+								<br /><br />
+								<!-- Iframe Gateway tokenization -->
 								<div id ="iframe-tokenization">
-									<a href="/iframeGatewayTokenization.jsp" role="button" class="btn btn-primary">Iframe Gateway Tokenization</a>
+									<a href="/iframeGatewayTokenization.jsp" role="button" class="btn btn-primary">Iframe gateway tokenization</a>
 									<br /><br />
 								</div>
-								<!-- Link to Gateway tokenization demo app -->
-								<a href="/gatewayTokenization.jsp" role="button" class="btn btn-primary">Gateway Tokenization</a>
+								<!-- IVR -->
+								<a href="/phoneSession.jsp" role="button" class="btn btn-primary">Phone/Call center (IVR)</a>
 								<br /><br />
-								<!-- Link to File dispatch demo app -->
-								<a href="/fileDispatch.jsp" role="button" class="btn btn-primary">File Dispatch</a>
+								<!-- Gateway tokenization -->
+								<a href="/gatewayTokenization.jsp" role="button" class="btn btn-primary">Gateway tokenization</a>
 								<br /><br />
-								<!-- Link to Xml file dispatch demo app -->
-								<a href="/paymentMsgDispatch.jsp" role="button" class="btn btn-primary">Xml Dispatch</a>
+								<!-- File dispatch -->
+								<a href="/fileDispatch.jsp" role="button" class="btn btn-primary">File dispatch</a>
+								<br /><br />
+								<!-- XML file dispatch -->
+								<a href="/paymentMsgDispatch.jsp" role="button" class="btn btn-primary">XML dispatch</a>
 							</div>
 						</div>
 					</fieldset>

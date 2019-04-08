@@ -28,13 +28,19 @@
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
 		// Please the following alert to properly display the error message
 		//alert("Error while processing credit card code:" + errorCode + "; msg:"	+ errorMsg);
+		console.log("=================Begin hpciSiteErrorHandler=================");
 		document.getElementById('errorMessage').style.display = 'block';
 		
+		console.log("=================End hpciSiteErrorHandler=================");
 		if(deferredCC.state() == 'pending')
 			return deferredCC.reject();
 	}
 
-	var hpciSiteSuccessHandlerV2 = function(mappedCCValue, mappedCVVValue, ccBINValue) {
+	var hpciSiteSuccessHandlerV5 = function(hpciMappedCCValue, hpciMappedCVVValue, hpciCCBINValue, 
+			hpciGtyTokenValue, hpciCCLast4Value, hpciReportedFormFieldsObj, 
+			hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt) {
+
+		console.log("=================Begin hpciSiteSuccessHandlerV5=================");
 		// Please pass the values to the document input and then submit the form
 		
 		// No errors from iframe so hide the errorMessage div
@@ -42,21 +48,23 @@
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccNumInput = document.getElementById("ccNum");
-		ccNumInput.value = mappedCCValue;
+		ccNumInput.value = hpciMappedCCValue;
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccCVVInput = document.getElementById("ccCVV");
-		ccCVVInput.value = mappedCVVValue;
+		ccCVVInput.value = hpciMappedCVVValue;
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccBINInput = document.getElementById("ccBIN");
-		ccBINInput.value = ccBINValue;
+		ccBINInput.value = hpciCCBINValue;
 
 		if(deferredCC.state() == 'pending')
 			deferredCC.resolve();
 
+		console.log("=================End hpciSiteSuccessHandlerV5=================");
+		
 		return false;
 	}
 
@@ -80,6 +88,7 @@
 	}
 
 	var hpciCCDigitsSuccessHandlerV2 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, hpciCCEnteredLengthValue) {
+		console.log("================ Begin hpciCCDigitsSuccessHandlerV2================");
 		// Use to enable credit card digits key press
 		sendHPCIChangeClassMsg("ccNum-wrapper", "input-text input-text--validatable");
 		
@@ -123,9 +132,11 @@
 			document.getElementById("submitButton").disabled = true;
 			document.getElementById("errorMessage2").style.display = "block";
 		}
+		console.log("=================End hpciCCDigitsSuccessHandlerV2==================");
 	}
 	
-	var hpciCVVDigitsSuccessHandler = function(hpciCVVDigitsValue) {
+	var hpciCVVDigitsSuccessHandler = function(hpciCVVDigitsValue, hpciCVVValidValue) {
+		console.log("=================Begin hpciCVVDigitsSuccessHandler===========");
 		// Use to enable CVV digits key press
 		sendHPCIChangeClassMsg("ccCVV-wrapper", "input-text input-text--validatable");
 		
@@ -139,6 +150,8 @@
 		} else if ((cvvLength >= 3) && (cvvLength <= 4)) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--populated");
 		}
+		
+		console.log("=================End hpciCVVDigitsSuccessHandler=============");
 	}
 	
 	function parseQueryString(data, split, separator) {
@@ -186,7 +199,7 @@ jQuery(document).ready(function() {
     			locationName = resultMap["locationName"]; 
     			cvvOnlyLocationName = resultMap["cvvOnlyLocationName"];
     			fullParentQStr = location.pathname;
-    			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    			fullParentHost = location.protocol.concat("//") + window.location.hostname + (location.port ? ':' + location.port: '');
     			hpciCCFrameHost = resultMap["serviceUrl"];
     			currency = resultMap["currency"];
     			//Setting currency drop-down list options
@@ -222,7 +235,7 @@ jQuery(document).ready(function() {
     				jQuery('#ccButtonLabel').html(queryToken[0]);
     				jQuery('#ccCVV').val(queryToken[1]);
     			}
-    			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
+    			console.log(fullParentHost);
     			console.log(location.pathname);
     			console.log("SiteId :" + siteId);
     			console.log("LocationName :" + locationName);
@@ -276,11 +289,9 @@ jQuery(document).ready(function() {
 										 "Status: " + resultMap["status"] + "<br/>"
 										 + "Description: " + resultMap["pxyResponse.responseStatus.description"] + "<br/>"
 										 + "Processor Reference ID: " + resultMap["pxyResponse.processorRefId"] + "<br/>"
-										 + "Merchant ID: " + jQuery("#merchantRefId").val() + "<br/>"
 										 + "Token Card Number: " + jQuery("#ccNum").val() + "<br/>"
 										 + "Token CVV Number: " + jQuery("#ccCVV").val() + "<br/>"
-										 + "Amount: " + resultMap["txnResponse.transAmount"] + "<br/>"
-										 + "Comments: " + jQuery("#comment").val());
+										 + "Amount: " + jQuery("#amount").val() + "<br/>");
 									jQuery("#message").html("Full Message: " + "<br/>" 
 											+ decodeURIComponent(data));
 								}
@@ -301,12 +312,9 @@ jQuery(document).ready(function() {
 		location.reload(true);
 	});
 	
-	jQuery('#noButton').click(function () {
-		jQuery('#message').hide('slow');
-	});
-	
-	jQuery('#yesButton').click(function () {
-		jQuery('#message').show('slow');
+	jQuery("#toggleMessage").click(function() {
+		jQuery("#message").toggle("slow");
+		jQuery(this).val(jQuery(this).val() == "Show response" ? "Hide response" : "Show response");
 	}); 
 	
 	jQuery('input:text').on('blur', function(){
@@ -372,42 +380,29 @@ jQuery(document).ready(function() {
 									id is used in confirmation.jsp
 							</div> -->
 						</div><!-- form-group -->
-						<!-- Input form-group (exp, month, cvv) -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<select id="expiryMonth" name="expiryMonth" class="selectpicker">
-									<option value="01">01 - January</option>
-									<option value="02">02 - February</option>
-									<option value="03">03 - March</option>
-									<option value="04">04 - April</option>
-									<option value="05">05 - May</option>
-									<option value="06">06 - June</option>
-									<option value="07">07 - July</option>
-									<option value="08">08 - August</option>
-									<option value="09">09 - September</option>
-									<option value="10">10 - October</option>
-									<option value="11">11 - November</option>
-									<option value="12">12 - December</option>
-								</select>
+						<div class="booking-form__field">
+							<label>Expiry date</label>
+				    	</div>
+						<div class="col-xs-4 col-sm-3 col-md-2">
+							<div class="booking-form__field">
+								<div class="input-text">
+									<input id="expiryMonth" type="text" name="expiryMonth">
+									<label for="expiryMonth">
+									Month
+									</label>
+								</div>
 							</div>
-							<div class="col-xs-4 col-sm-3 col-md-4">		
-								<!-- id is used in confirmation.jsp -->
-								<select id="expiryYear" name="expiryYear" class="selectpicker">
-									<option value="17">2017</option>
-									<option value="18">2018</option>
-									<option value="19">2019</option>
-									<option value="20">2020</option>
-									<option value="21">2021</option>
-									<option value="22">2022</option>
-									<option value="23">2023</option>
-									<option value="24">2024</option>
-									<option value="25">2025</option>
-									<option value="26">2026</option>
-									<option value="27">2027</option>
-									<option value="28">2028</option>
-								</select>
+						</div>
+						<div class="col-xs-4 col-sm-3 col-md-2">
+							<div class="booking-form__field">
+								<div class="input-text">
+									<input id="expiryYear" type="text" name="expiryYear">
+									<label for="expiryYear">
+									Year
+									</label>
+								</div>
 							</div>
-						</div><!-- form-group -->
+						</div>
 					</fieldset>
 					<br />
 					<fieldset>
@@ -547,11 +542,7 @@ jQuery(document).ready(function() {
 					<div id = "result">
 					</div>
 					<br/>
-					<label>Show Full Message?</label><br />
-					<input id ="noButton" type = "radio" name="type" checked="checked"/>
-					<label for = "noButton">No</label>
-					<input id="yesButton" type="radio" name="type" />
-					<label for = "yesNoButton">Yes</label>
+					<input type="button" id="toggleMessage" value="Show response" class="btn">
 					<div id = "message" style="word-wrap: break-word;">
 					</div><br/><br/>
 					<br /> <input Type="button"  id = "backBtn" class="btn btn-primary" value="Back"></input><br />					

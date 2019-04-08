@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -88,6 +89,10 @@ public class CvvOnlyIframeServlet extends HttpServlet {
 		merchantRefId = request.getParameter("merchantRefId");
 		String currency = request.getParameter("currency");
 		String paymentProfile = request.getParameter("paymentProfile");
+		String customerId = "";
+		
+		if(mapConfig == null)
+			mapConfig = DemoUtil.getConfigProperties();
 		
 
 		// Setup request param map
@@ -106,17 +111,29 @@ public class CvvOnlyIframeServlet extends HttpServlet {
 		// Continue to populate hpciRequestParamMap with all the required
 		// information
 		// hpciRequestParamMap.put("pxyCreditCard.cardType", cardType);
-		hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", cardNumber);
-		hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
-		hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
-		hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", cardCVV);
-		hpciRequestParamMap.put("pxyTransaction.txnAmount", amount);
-		hpciRequestParamMap.put("pxyTransaction.txnCurISO", currency);
+		if (cardNumber != null && !cardNumber.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", cardNumber);
+		if (expiryMonth != null && !expiryMonth.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
+		if (expiryYear != null && !expiryYear.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
+		if (cardCVV != null && !cardCVV.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", cardCVV);
+		if (amount != null && !amount.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnAmount", amount);
+		if (currency != null && !currency.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnCurISO", currency);
+		if (merchantRefId == null || merchantRefId.isEmpty()){
+			merchantRefId = UUID.randomUUID().toString().substring(0,15);
+		}
 		hpciRequestParamMap.put("pxyTransaction.merchantRefId", merchantRefId);
-		hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
-		hpciRequestParamMap.put("pxyTransaction.txnComment", comments);
-		hpciRequestParamMap.put("pxyCustomerInfo.email", "email@email.com");
-		hpciRequestParamMap.put("pxyCustomerInfo.customerId", "111");
+		if (paymentProfile != null && !paymentProfile.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
+		if (comments != null && !comments.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnComment", comments);
+		hpciRequestParamMap.put("pxyCustomerInfo.email", "user@testemail.com");
+		customerId = UUID.randomUUID().toString().substring(0,15);
+		hpciRequestParamMap.put("pxyCustomerInfo.customerId", customerId);
 
 		// Assuming the full request param map is ready
 		// Url string is made of the api url which is given by

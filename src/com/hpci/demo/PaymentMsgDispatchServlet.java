@@ -23,9 +23,10 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 	private static final String PXY_MSGDISPATCH = "/iSynSApp/paymentMsgDispatch.action";
 	
 	private static final String PXYPARAM_APIVERSION = "apiVersion";
-	private static final String PXYPARAM_APIVERSION_NUM = "1.0.1"
-;	private static final String PXYPARAM_APITYPE = "apiType";
+	private static final String PXYPARAM_APIVERSION_NUM = "1.0.1";
+	private static final String PXYPARAM_APITYPE = "apiType";
 	private static final String PXYPARAM_APITYPE_PXYHPCI = "pxyhpci";
+	private static final String PXYPARAM_CURRENCY = "pxyTransaction.txnCurISO";
 	private static final String PXYPARAM_USERNAME = "userName";
 	private static final String PXYPARAM_USERPASSKEY = "userPassKey";
 	
@@ -126,6 +127,8 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Map<String, String> paramMap = new HashMap<String, String>();
+		if(mapConfig == null)
+			mapConfig = DemoUtil.getConfigProperties();
 		
 		String serviceUrl = mapConfig.get(PROPERTY_API_SERVICE_URL);
 		String userName = mapConfig.get(PXYPARAM_USERNAME);
@@ -138,6 +141,7 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 		String ccvToken = request.getParameter("cvvToken");
 		String profileName = request.getParameter(PXYPARAM_DISPATCHREQUEST_PROFILENAME);
 		String contentType = request.getParameter(PXYPARAM_DISPATCHREQUEST_CONTENTTYPE);
+		String currency = request.getParameter("currency");
 		
 		paramMap.put(PXYPARAM_APIVERSION, PXYPARAM_APIVERSION_NUM);
 		paramMap.put(PXYPARAM_APITYPE, PXYPARAM_APITYPE_PXYHPCI);
@@ -145,6 +149,7 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 		paramMap.put(PXYPARAM_USERPASSKEY, userPassKey);
 		
 		paramMap.put(PXYPARAM_DISPATCHREQUEST_PROFILENAME, profileName);
+		paramMap.put(PXYPARAM_CURRENCY, currency);
 		paramMap.put(PXYPARAM_DISPATCHREQUEST_CONTENTTYPE, contentType);
 		paramMap.put(PXYPARAM_DISPATCHREQUEST_REQUEST, paymentMsg);
 		

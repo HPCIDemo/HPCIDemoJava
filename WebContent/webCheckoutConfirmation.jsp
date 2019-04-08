@@ -15,11 +15,9 @@
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 $(document).ready(function () {
-	$('#noButton').click(function () {
-		$('#message').hide('slow');
-	});
-	$('#yesButton').click(function () {
-		$('#message').show('slow');
+	$("#toggleMessage").click(function() {
+		$("#message").toggle("slow");
+		$(this).val($(this).val() == "Show response" ? "Hide response" : "Show response");
 	});
 });
 </script>
@@ -38,7 +36,7 @@ $(document).ready(function () {
 					</ul>
 				</div>
 			</div>
-			<form>
+			<form class = "checkout-confirmation">
 				<section>
 					<fieldset style="min-height: 100px;">
 						<!-- Form Name -->
@@ -49,32 +47,52 @@ $(document).ready(function () {
 							services. If you have any questions, please contact us at
 							www.hostedpci.com<br />
 							<br /> <label>Transaction Summary</label><br /> <label>*******************</label><br />
-							<!-- Gets responseStatus from the response map that the iframe sent back -->
-							<label>Status: <c:out value="${map['pxyResponse.responseStatus.name']}" /></label><br />
-							<!-- Gets description from the response map that the iframe sent back -->
-							<label>Description: <c:out value="${map['pxyResponse.responseStatus.description']}" /></label><br />
-							<!-- Gets processorRefId from the response map that the iframe sent back -->
-							<label>Processor Reference ID: <c:out value="${map['pxyResponse.processorRefId']}" /></label><br />
-							<!-- Gets merchantRefId from the response map that the iframe sent back -->
-							<label>Merchant ID: <c:out value="${globalMap['merchantRefId']}" /></label><br />
-							<!-- Gets cardType from the user input on previous page -->
-							<c:set var="mappedParams" value="${map['pxyResponse.mappedParams']}" />
-							<c:set var="mappedParamsValue" value="${fn:split(mappedParams, '=')}" />
-							<label>Card Type: <c:out value="${mappedParamsValue[1]}" /></label><br />
-							<!-- Gets cardNumber  -->
+							<!-- Get the response that the hpci's server sent back -->
+							<c:if test="${not empty map['status']}">
+								<label>HPCI Status: <c:out value="${map['status']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.responseStatus.name']}">
+								<label>Status Name: <c:out value="${map['pxyResponse.responseStatus.name']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.responseStatus.description']}">							
+								<label>Description: <c:out value="${map['pxyResponse.responseStatus.description']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.responseStatus.code']}">							
+								<label>Status Code: <c:out value="${map['pxyResponse.responseStatus.code']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.responseStatus.reasonCode']}">							
+								<label>Reason Code: <c:out value="${map['pxyResponse.responseStatus.reasonCode']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.responseStatus']}">							
+								<label>Status: <c:out value="${map['pxyResponse.responseStatus']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['errId']}">
+								<label>HPCI Error Code: <c:out value="${map['errId']}" /></label><br />	
+								<label>HPCI Description: <c:out value="${map['errFullMsg']}" /></label><br />
+								<c:if test="${not empty map['errParamName']}">
+									<label>HPCI Error Parameter Name: <c:out value="${map['errParamName']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty map['errParamValue']}">
+									<label>HPCI Error Parameter Value: <c:out value="${map['errParamValue']}" /></label><br />	
+								</c:if>		
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.fullNativeResp']}">							
+								<label>Native Response: <c:out value="${map['pxyResponse.fullNativeResp']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty map['pxyResponse.processorRefId']}">
+								<label>Processor Reference ID: <c:out value="${map['pxyResponse.processorRefId']}" /></label><br />
+							</c:if>
+							<!-- Gets cardNumber(token)  -->
 							<label>Token Card Number: <c:out value="${globalMap['cardNumber']}" /></label><br />
-							<!-- Gets cvvNumber  -->
+							<!-- Gets cvvNumber(token)  -->
 							<label>Token CVV Number: <c:out value="${globalMap['cardCVV']}" /></label><br />
 							<!-- Gets today's date -->
-							<label>Payment Date: <c:set var="now" value="<%=new java.util.Date()%>" /><fmt:formatDate type="both" value="${now}" /></label><br />
-							<!-- Gets amount from the user input on previous page -->
-							<label>Amount: <c:out value="${param.amount}" /></label><br />
-							<!-- Gets comment from the user input on previous page -->
-							<label>Comments: <c:out value="${param.comment}" /></label><br />
-							<label>Show Full Message?</label><br />
-								<input id="noButton" type="radio" name="radioButton" checked />No
-								<input id="yesButton" type="radio" name="radioButton" />Yes
-							<div id="message" style="display:none; word-wrap: break-word;">
+							<label>
+								Payment Date: <c:set var="now" value="<%=new java.util.Date()%>" />
+								<fmt:formatDate type="both" value="${now}" />
+							</label><br />
+							<input type="button" id="toggleMessage" value="Show response" class="btn">
+							<div id="message">
 								<label>Full Message: </label><br />
 								<c:out value="${map}" />
 							</div><br />

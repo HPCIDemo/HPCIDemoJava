@@ -1,4 +1,10 @@
 @CHARSET "UTF-8";
+html {
+	box-sizing: border-box;
+	font-size: 14px;
+	font-family: "Arial", sans-serif;
+}
+
 body {
 	background-color: #DDDDDD;
 }
@@ -14,7 +20,6 @@ h1 {
 
 fieldset {
 	font-family: sans-serif;
-	//border: 5px solid #1F497D;
 	background: white;
 	border-radius: 5px;
 	padding: 15px;
@@ -22,19 +27,16 @@ fieldset {
 }
 
 fieldset legend {
-	//background: #1F497D;
+
 	background: #FFF;
-	//color: #fff;
 	color: #026f94;
 	padding: 5px 10px;
 	font-size: 32px;
 	border-radius: 5px 5px 0px 0px;
-	//box-shadow: 0 0 0 5px #ddd;
 	border-color:#00c8d0;
 	border-width: 0px 0px 3px;
 	margin-left: 10px;
 	margin-right: 60px;
-	//width: auto;
 }
 .btn{
 	background: #026f94;
@@ -53,6 +55,7 @@ fieldset legend {
     border-radius: 4px;
     background-color: #F8F8F8;
     display:none;
+    margin-top: 30px;
 }
 
 .btn {
@@ -193,4 +196,103 @@ li #hostedPCI {
 
 .session-group{
 	line-height: 50px;
+}
+
+.checkout-confirmation{
+	word-break: break-word;
+}
+
+.booking-form__field {
+	margin-top: 0.75rem;
+	width: 100%;
+	float: left;
+	clear: left;
+}
+
+.input-text {
+	margin-bottom: 1rem;
+	position: relative;
+	font-size: 0.9rem;
+}
+
+.input-text .input-text__input--populated {
+	border-color: #2E2F32;
+}
+
+.input-text input:hover {
+	border-color: #acaeb3;
+}
+
+.input-text input:focus {
+	border-color: #2E2F32;
+}
+
+.input-text.input-text--validatable .input-text__input--invalid {
+	border-color: rgba(255, 110, 171, 0.5);
+}
+
+.input-text.input-text--validatable .input-text__input--invalid:focus,
+	.input-text.input-text--validatable .input-text__input--invalid:hover {
+	border-bottom-color: #ff6eab;
+}
+
+.input-text input {
+	width: 100%;
+}
+
+.input-text input.input-text__input--populated+label, .input-text input:focus+label
+	{
+	opacity: 0.5;
+	font-size: 0.9rem;
+	-webkit-transform: translate3d(0, -1.7rem, 0);
+	transform: translate3d(0, -1.7rem, 0);
+}
+
+.input-text label {
+	-webkit-transition: all 0.2s cubic-bezier(0.86, 0, 0.07, 1);
+	transition: all 0.2s cubic-bezier(0.86, 0, 0.07, 1);
+	opacity: 0.7;
+	-webkit-transition-timing-function: cubic-bezier(0.35, 0.85, 0.2, 1.2);
+	transition-timing-function: cubic-bezier(0.35, 0.85, 0.2, 1.2);
+	cursor: text;
+	padding: 0.75rem 0.5rem;
+	position: absolute;
+	top: 0;
+	left: 0;
+	will-change: opacity, transform;
+}
+
+.input-text--validatable .input-text__input--invalid+label {
+	color: #de496c;
+	opacity: 1;
+}
+
+input[type="text"], input[type="number"] {
+	-webkit-transition: all 0.2s cubic-bezier(0.86, 0, 0.07, 1);
+	transition: all 0.2s cubic-bezier(0.86, 0, 0.07, 1);
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	box-shadow: none;
+	box-sizing: border-box;
+	border: none;
+	border-bottom: 2px solid #e1e2e4;
+	border-radius: 0;
+	font-family: "Arial", sans-serif;
+	font-size: 1rem;
+	padding: 0.75rem 0.5rem;
+	outline: none;
+}
+
+input[type="text"]:focus, input:active {
+	border-color: #2E2F32;
+	box-shadow: none;
+	outline: 0 none;
+	-webkit-appearance: none;
+}
+
+label, label>* {
+	font-family: "Arial", sans-serif;
+	font-weight: normal;
+/* 	pointer-events: none; */
 }

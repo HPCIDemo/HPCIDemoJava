@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>HPCIDemoJava6</display-name>
+  <display-name>HPCIDemoJava8</display-name>
   <welcome-file-list>
     <welcome-file>home.jsp</welcome-file>
   </welcome-file-list>
@@ -51,5 +51,17 @@
     <servlet-name>GatewayTokenizationServlet</servlet-name>
     <servlet-class>com.hpci.demo.GatewayTokenizationServlet</servlet-class>
     <url-pattern>/GatewayTokenizationServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
+    <servlet-name>IframeSplitModeServlet</servlet-name>
+    <servlet-class>com.hpci.demo.IframeSplitModeServlet</servlet-class>
+    <url-pattern>/IframeSplitModeServlet</url-pattern>
+  </servlet>
+  <servlet>
+    <description></description>
+    <servlet-name>IframeAutofillServlet</servlet-name>
+    <servlet-class>com.hpci.demo.IframeAutofillServlet</servlet-class>
+    <url-pattern>/IframeAutofillServlet</url-pattern>
   </servlet>
 </web-app>

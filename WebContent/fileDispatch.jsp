@@ -24,7 +24,10 @@
 		for (var i = 0; i < queryTokenList.length; i++) {
 			queryToken = queryTokenList[i].split(separator);
 			resultMap.push(queryToken[1]);
-			resultMap[queryToken[0]] = queryToken[1];
+			let tokenValue = "";
+			if(queryToken[1] != undefined && queryToken[1] != "")
+				tokenValue = decodeURIComponent(queryToken[1].replace(/\+/g,  " "))
+			resultMap[queryToken[0]] = tokenValue;
 		}
 
 		return resultMap;
@@ -100,8 +103,13 @@ jQuery(document).ready(function() {
         var blob = new Blob([content], { type: "text/plain"});
         
         var formData = new FormData();
+        
+        var fileName = "data.csv";
+        if(jQuery("#file")[0].files[0].name != undefined && jQuery("#file")[0].files[0].name != "")
+        	fileName = jQuery("#file")[0].files[0].name;
+        
         formData.append("tokenFile", blob, "data.csv");
-        formData.append("dispatchRequest.destFileName", "data.csv");
+        formData.append("dispatchRequest.destFileName", fileName);
         formData.append("dispatchRequest.profileName" , jQuery("#paymentProfile").val());
         
         jQuery.ajax({
@@ -111,25 +119,40 @@ jQuery(document).ready(function() {
 			  processData: false,  // tell jQuery not to process the data
 			  contentType: false   // tell jQuery not to set contentType
 			}).done(function(data) {
-				jQuery('#checkout').hide();
-				jQuery('#trSummary').show();
-				console.log(data);
-			    //parse the result
-			    var resultMap = parseQueryString(data, '&', '=');
-				if (data != undefined) {
-					 jQuery("#result").html(
-							 "Status: " + resultMap["status"] + "<br/>"
-							 + "Description: " + resultMap["pxyResponse.responseStatus"] + "<br/>"
-							 + "AuthId: " + resultMap["authId"] + "<br/>"
-							 + "File rows count: " + resultMap["pxyResponse.fileRowCount"]);
-					jQuery("#message").html("Full Message: " + "<br/>" + data);
-				}else{
-					jQuery("#result").html(
-							 "Status: undefined" +"<br/>"
-							 + "Description: error processing transaction");
-				}
+					jQuery('#checkout').hide();
+					jQuery('#trSummary').show();
+					console.log(data);
+				    //parse the result
+				    var resultMap = parseQueryString(data, '&', '=');
+				    if (data != undefined) {
+				    	var displayMessage = "";
+				    	if(resultMap["status"] != undefined){
+							displayMessage = "HPCI status: " + resultMap["status"] + "<br>";
+	    					if(resultMap["status"] == "error") {	    						
+	    						if(resultMap["errId"] != undefined && resultMap["errId"] != "")
+	    							displayMessage = displayMessage + "HPCI error Id: " + resultMap["errId"] + "<br>";
+	    						if(resultMap["errFullMsg"] != undefined && resultMap["errFullMsg"] != "")
+	    							displayMessage = displayMessage + "HPCI error message: " + resultMap["errFullMsg"] + "<br>";
+	    						if(resultMap["errParamName"] != undefined && resultMap["errParamName"] != "")
+	    							displayMessage = displayMessage + "HPCI error parameter name: " + resultMap["errParamName"] + "<br>";
+	    						if(resultMap["errParamValue"] != undefined && resultMap["errParamValue"] != "")
+	    							displayMessage = displayMessage + "HPCI error parameter value: " + resultMap["errParamValue"] + "<br>";
+	    					} else {
+	    						displayMessage = displayMessage 
+	    										+ "Description: " + resultMap["pxyResponse.responseStatus"] + "<br/>"
+								 				+ "AuthId: " + resultMap["authId"] + "<br/>"
+								 				+ "File rows count: " + resultMap["pxyResponse.fileRowCount"];
+	    					}
+						}
+						jQuery("#result").html(displayMessage);
+						jQuery("#message").html("Full Message: " + "<br/>" + data);
+					} else{
+						jQuery("#result").html(
+								 "Status: undefined" +"<br/>"
+								 + "Description: error processing transaction");
+					}
+				});	
 			});	
-		});	
     
 	jQuery('#paymentResetButton').click(function resetPayment() {
 		location.reload(true);
@@ -139,13 +162,10 @@ jQuery(document).ready(function() {
 		location.reload(true);
 	});
 	
-	jQuery('#noButton').click(function(){
-		jQuery('#message').hide('slow');
+	jQuery("#toggleMessage").click(function() {
+		jQuery("#message").toggle("slow");
+		jQuery(this).val(jQuery(this).val() == "Show response" ? "Hide response" : "Show response");
 	});
-	
-	jQuery('#yesButton').change(function(){
-		jQuery('#message').show('slow');
-	}); 
 	
 	jQuery('input:text').on('blur', function(){
 		if (jQuery(this).val() ) { 
@@ -214,11 +234,7 @@ jQuery(document).ready(function() {
 					<div id = "result">
 					</div>
 					<br/>
-					<label>Show Full Message?</label><br />
-					<input id ="noButton" type = "radio" name="yesNoButton" checked="checked"/>
-					<label for = "noButton">No</label>
-					<input id="yesButton" type="radio" name="yesNoButton" />
-					<label for = "yesNoButton">Yes</label>
+					<input type="button" id="toggleMessage" value="Show response" class="btn">
 					<div id = "message" style="word-wrap: break-word;">
 					</div><br/><br/>
 					<br /> <input Type="button"  id = "backBtn" class="btn btn-primary" value="Back"></input><br />					

@@ -66,6 +66,10 @@ public class GatewayTokenizationServlet extends HttpServlet {
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String paymentProfile = request.getParameter("paymentProfile");
+		String currency = request.getParameter("currency");
+		
+		if(mapConfig == null)
+			mapConfig = DemoUtil.getConfigProperties();
 
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();
@@ -82,13 +86,22 @@ public class GatewayTokenizationServlet extends HttpServlet {
 
 		// Continue to populate hpciRequestParamMap with all the required
 		// information
-		hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", ccNum);
-		hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", ccCVV);
-		hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
-		hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
-		hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.firstName", firstName);
-		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.lastName", lastName);
+		if (ccNum != null && !ccNum.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", ccNum);
+		if (ccCVV != null && !ccCVV.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", ccCVV);
+		if (expiryMonth != null && !expiryMonth.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
+		if (expiryYear != null && !expiryYear.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
+		if (paymentProfile != null && !paymentProfile.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
+		if (currency != null && !currency.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnCurISO", currency);
+		if (firstName != null && !firstName.isEmpty())
+			hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.firstName", firstName);
+		if (lastName != null && !lastName.isEmpty())
+			hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.lastName", lastName);
 			
 		// Assuming the full request param map is ready
 		// Url string is made of the api url which is given by

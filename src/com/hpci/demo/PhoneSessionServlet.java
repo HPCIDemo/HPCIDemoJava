@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,16 +52,17 @@ public class PhoneSessionServlet extends HttpServlet {
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();
 		// Populate hpciRequestParamMap with all the needed pairs of information
-		mapConfig = DemoUtil.getConfigProperties();
+		if(mapConfig == null)
+			mapConfig = DemoUtil.getConfigProperties();
 		
 		hpciRequestParamMap.put("apiVersion",mapConfig.get("apiVersion"));
 		hpciRequestParamMap.put("apiType", mapConfig.get("apiType"));
 		
 		// The username is given by HostedPCI
-		hpciRequestParamMap.put("userName", mapConfig.get("userName"));
+		hpciRequestParamMap.put("userName", mapConfig.get("ivrUserName"));
 		
 		// The passkey is given by HostedPCI
-		hpciRequestParamMap.put("userPassKey", mapConfig.get("userPassKey"));
+		hpciRequestParamMap.put("userPassKey", mapConfig.get("ivrUserPassKey"));
 		
 		// Prepare the urlString which will be initialized as empty
 		String urlString = "";
@@ -87,7 +89,7 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("ccExpiry", "request");
 			
 			// URL action used			
-			urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
+			urlString = mapConfig.get("ivrApiServiceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
 			
 		} else if(flag.equals("checkStatus")) {
 			
@@ -102,7 +104,7 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("selectedPcsId", sessionId);
 			
 			//URL action used
-			urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
+			urlString = mapConfig.get("ivrApiServiceUrl") + "/iSynSApp/manageCCMapPhoneAPI.action";
 				
 		} else if(flag.equals("processPayment")) {
 			
@@ -142,12 +144,15 @@ public class PhoneSessionServlet extends HttpServlet {
 			hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.country", country);
 			hpciRequestParamMap.put("pxyTransaction.txnCurISO", currency);
 			hpciRequestParamMap.put("pxyTransaction.txnAmount", paymentAmount);
-			hpciRequestParamMap.put("pxyTransaction.merchantRefId", paymentReference);
+			if (paymentReference == null || paymentReference.isEmpty()){
+				paymentReference = UUID.randomUUID().toString().substring(0,15);
+				hpciRequestParamMap.put("pxyTransaction.merchantRefId", paymentReference);
+			}
 			hpciRequestParamMap.put("pxyTransaction.txnComment", paymentComments);
 			hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
 			
 			// URL action used			
-			urlString = mapConfig.get("apiServiceUrl") + "/iSynSApp/paymentAuth.action";
+			urlString = mapConfig.get("ivrApiServiceUrl") + "/iSynSApp/paymentAuth.action";
 		}
 		
 		response.setHeader("Cache-Control", "no-cache");

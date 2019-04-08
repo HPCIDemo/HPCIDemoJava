@@ -241,6 +241,9 @@ public class FileDispatchServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		if(mapConfig == null)
+			mapConfig = DemoUtil.getConfigProperties();
+		
 		InputStream dispatchFileStream = null;
 		Part part = request.getPart("tokenFile");
 		

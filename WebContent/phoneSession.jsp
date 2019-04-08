@@ -124,6 +124,7 @@ $(document).ready(function(event){
 						
 						// Fill the cc token into the form
 						$('#ccToken').val(mappedCC);
+						$('#ccToken').blur();
 						
 						// Flag used to know that cc was verified and filled into the form
 						tokenFlag = "ccTokenReturned";
@@ -132,6 +133,7 @@ $(document).ready(function(event){
 						
 						// Fill the cvv token into the form
 						$('#cvvToken').val(mappedCVV);
+						$('#cvvToken').blur();
 						
 						// Flag to know both cc and cvv been verified and filled into the form
 						tokenFlag = "ccAndCvvTokenReturned";
@@ -224,22 +226,15 @@ $(document).ready(function(event){
 		$('#resetPaymentButton').attr("disabled", true);
 		
 	});
+	
+	$("input:text").on("blur", function(){
+		if (jQuery(this).val() ) { 
+			jQuery(this).attr("class", "input-text__input input-text__input--populated");
+		} else {
+			jQuery(this).attr("class", "");
+		};
+	});
 });
-/* $.hpciUrlParam = function(name, queryStr){
-	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(queryStr);
-	if (!results) { return 0; }
-	return results[1] || 0;
-}
-$.hpciUrlParamStr = function(name, queryStr) {
-	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(queryStr);
-	if (!results) { return ""; }
-	return results[1] || "";
-}
-$.hpciUrlParamArry = function(name, queryStr) {
-	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(queryStr);
-	if (!results) { return ""; }
-	return results[1] || "";
-} */
 // Function that reads a query string and organizes it
 $.hpciParamMap = function(queryStr) {
 	var queryMap = [], queryToken;
@@ -256,11 +251,9 @@ $.hpciParamMap = function(queryStr) {
 </script>
 <script type="text/javascript">
 $(document).ready(function () {
-	$('#noButton').click(function () {
-		$('#message').hide('slow');
-	});
-	$('#yesButton').click(function () {
-		$('#message').show('slow');
+	$("#toggleMessage").click(function() {
+		$("#message").toggle("slow");
+		$(this).val($(this).val() == "Show message" ? "Hide message" : "Show message");
 	});
 });
 </script>
@@ -305,7 +298,7 @@ $(document).ready(function () {
 					<br />
 					<fieldset>
 						<legend>Credit Card Information</legend>
-						<div class="form-group">
+						<div class="booking-form__field form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<!-- Select credit card -->
 								<label for="cardType">Card Type</label>
@@ -318,123 +311,108 @@ $(document).ready(function () {
 								</select>
 							</div>
 						</div><!-- row -->
-						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Credit Card Token</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
-								<input id="ccToken" type="text" name="ccToken" placeholder="Automatically Filled">
+						<div class="booking-form__field">
+							<div class="input-text">
+								<input id="ccToken" type="text" name="ccToken">
+								<label for="ccToken">
+								Credit Card Token
+								</label>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>CVV Token</label>
+						<div class="booking-form__field">
+							<div class="input-text">
+								<input id="cvvToken" type="text" name="cvvToken">
+								<label for="cvvToken">
+								CVV Token
+								</label>
 							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
-								<input id="cvvToken" type="text" name="cvvToken" placeholder="Automatically Filled">
+						</div>
+						<div class="booking-form__field">
+							<label>Expiry date</label>
+					    </div>
+					    <div>
+							<div class="col-xs-4 col-sm-3 col-md-2">
+								<div class="booking-form__field">
+									<div class="input-text">
+										<input id="expiryMonth" type="text" name="expiryMonth">
+										<label for="expiryMonth">
+										Month
+										</label>
+									</div>
+								</div>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Expiry MM/YY</label>
+							<div class="col-xs-4 col-sm-3 col-md-2">
+								<div class="booking-form__field">
+									<div class="input-text">
+										<input id="expiryYear" type="text" name="expiryYear">
+										<label for="expiryYear">
+										Year
+										</label>
+									</div>
+								</div>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<select id="expiryMonth" name="expiryMonth" class="selectpicker">
-									<option value="01">01 - January</option>
-									<option value="02">02 - February</option>
-									<option value="03">03 - March</option>
-									<option value="04">04 - April</option>
-									<option value="05">05 - May</option>
-									<option value="06">06 - June</option>
-									<option value="07">07 - July</option>
-									<option value="08">08 - August</option>
-									<option value="09">09 - September</option>
-									<option value="10">10 - October</option>
-									<option value="11">11 - November</option>
-									<option value="12">12 - December</option>
-								</select>
-							</div>
-							<div class="col-xs-2 col-sm-2 col-md-2">		
-								<!-- id is used in confirmation.jsp -->
-								<select id="expiryYear" name="expiryYear" class="selectpicker">
-									<option value="17">2017</option>
-									<option value="18">2018</option>
-									<option value="19">2019</option>
-									<option value="20">2020</option>
-									<option value="21">2021</option>
-									<option value="22">2022</option>
-									<option value="23">2023</option>
-									<option value="24">2024</option>
-									<option value="25">2025</option>
-									<option value="26">2026</option>
-									<option value="27">2027</option>
-								</select>
-							</div>
-						</div><!-- row -->
+						</div>						
 					</fieldset>
 					<br />
 					<fieldset>
 						<legend>Personal Information</legend>
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>First Name:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="firstName" type="text" name="firstName">
+								<label for="firstName">
+								First Name
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Last Name:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="lastName" type="text" name="lastName">
+								<label for="lastName">
+								Last Name
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Address Line 1:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="address1" type="text" name="address1">
+								<label for="address1">
+								Address Line 1
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Address Line 2:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="address2" type="text" name="address2">
+								<label for="address2">
+								Address Line 2
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>City:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="city" type="text" name="city">
+								<label for="city">
+								City
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>State / Province:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="state" type="text" name="state">
+								<label for="state">
+								State / Province
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Zip / Postal Code:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="zip" type="text" name="zip">
+								<label for="zip">
+								Zip / Postal Code
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
+						</div>
+						<div class="booking-form__field form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Country:</label>
 							</div>
@@ -444,25 +422,24 @@ $(document).ready(function () {
 									<option value="US">United States</option>
 								</select>
 							</div>
-						</div><!-- row -->
-						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Payment Comments:</label>
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
+								<input id="paymentComments" type="text" name=paymentComments>
+								<label for="paymentComments">
+								Comments
+								</label>
 							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
-								<input id="paymentComments" type="text" name="paymentComments">
-							</div>
-						</div><!-- row -->
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Payment Reference:</label>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
 								<input id="paymentReference" type="text" name="paymentReference">
+								<label for="paymentReference">
+								Merchant Reference
+								</label>
 							</div>
-						</div><!-- row -->
-						<div class="form-group">
+						</div>
+						<div class="booking-form__field form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Currency:</label>
 							</div>
@@ -470,17 +447,16 @@ $(document).ready(function () {
 								<select id="currency" name="currency">									
 								</select>
 							</div>
-						</div><!-- row -->
-						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
-						<div class="form-group">
-							<div class="col-xs-4 col-sm-3 col-md-4">
-								<label>Payment Amount:</label>
+						</div>
+						<div class="booking-form__field">
+							<div class="input-text">
+								<input id="paymentAmount" type="text" name="paymentAmount">
+								<label for="paymentAmount">
+								Payment Amount
+								</label>
 							</div>
-							<div class="col-xs-4 col-sm-3 col-md-5">
-								<input id="paymentAmount" type="text" name="PaymentAmount">
-							</div>
-						</div><!-- row -->
-						<div class="form-group">
+						</div>
+						<div class="booking-form__field form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Payment Profile:</label>
 							</div>
@@ -488,8 +464,7 @@ $(document).ready(function () {
 								<select id="paymentProfile" name="paymentProfile">									
 								</select>
 							</div>
-						</div><!-- row -->
-						<div class="clearfix visible-xs-block visible-sm-block visible-md-block visible-lg-block"></div>
+						</div>
 						<div class="form-group">
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<button id="processPaymentButton" type="button" value="Process Payment" 
@@ -529,12 +504,8 @@ $(document).ready(function () {
 							</div>	
 						</div><!-- row -->
 						<div class="form-group">
-							<div class="col-md-8">
-								<label>Show Full Message?</label><br />
-								<input id="noButton" type="radio" name="radioButton" checked />No
-								<input id="yesButton" type="radio" name="radioButton" />Yes
-								<br />
-								<label>Full Message: </label><br />
+							<div class="col-md-12">
+								<input type="button" id="toggleMessage" value="Show message" class="btn">
 								<div id="message">
 								</div><br />
 							</div>	

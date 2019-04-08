@@ -15,70 +15,7 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"
 	rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
-<!-- Jquery 1.4.1-->
-<!-- <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery-1.4.1.min.js" type="text/javascript" charset="utf-8"></script> -->
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
-<script>
-	var hpciCCFrameHost;
-	var hpciCCFrameFullUrl ;
-	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
-
-	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
-		// Please the following alert to properly display the error message
-		//alert("Error while processing credit card code:" + errorCode + "; msg:"	+ errorMsg);
-		document.getElementById('errorMessage').style.display = 'block';
-	}
-
-	var hpciSiteSuccessHandlerV2 = function(mappedCCValue, mappedCVVValue, ccBINValue) {
-		// Please pass the values to the document input and then submit the form
-		
-		// No errors from iframe so hide the errorMessage div
-		document.getElementById('errorMessage').style.display = 'none';
-		// Name of the input (hidden) field required by ecommerce site
-		// Typically this is a hidden input field.
-		var ccNumInput = document.getElementById("ccNum");
-		ccNumInput.value = mappedCCValue;
-		alert("ccNumInput = " + ccNumInput);
-
-		// name of the input (hidden) field required by ecommerce site
-		// Typically this is a hidden input field.
-		var ccCVVInput = document.getElementById("ccCVV");
-		ccCVVInput.value = mappedCVVValue;
-
-		// name of the input (hidden) field required by ecommerce site
-		// Typically this is a hidden input field.
-		var ccBINInput = document.getElementById("ccBIN");
-		ccBINInput.value = ccBINValue;
-
-		// name of the form submission for ecommerce site
-		var pendingForm = document.getElementById("CCAcceptForm");
-		pendingForm.submit();
-
-	}
-
-	var hpci3DSitePINSuccessHandler = function() {
-		// name of the form submission for ecommerce site
-		var pendingForm = document.getElementById("CCAcceptForm");
-		pendingForm.submit();
-	}
-
-	var hpci3DSitePINErrorHandler = function() {
-		// Adapt the following message / action to match your required experience
-		alert("Could not verify PIN for the credit card");
-	}
-
-	var hpciCCPreliminarySuccessHandler = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue) {
-		// Adapt the following message / action to match your required experience
-		alert("Received preliminary credit card details");
-	}
-
-	var hpciCVVPreliminarySuccessHandler = function(hpciCVVLengthValue) {
-		// Adapt the following message / action to match your required experience
-		alert("Received preliminary CVV details");
-	}
-</script>
 <script type="text/javascript">
 $(document).ready(function(){
     $("#showMessage").on('change', function() {
@@ -95,55 +32,12 @@ $(document).ready(function(){
 </script>
 <script type="text/javascript">
 $(document).ready(function () {
-	var siteId;
-    var locationName;
-    var fullParentQStr;
-    var fullParentHost;    
-    var flag = "config";
-    
-    jQuery.get("Iframe3DSecServlet",
-    	    {
-    			flag:flag,
-    		},
-    		function(data){
-    			//parse the result
-    			var resultMap = [], queryToken;
-    		    if(data != undefined) {
-    				queryTokenList = data.split(',');
-    				for(var i = 0; i < queryTokenList.length; i++){
-   						queryToken = queryTokenList[i].split(';');
-   						resultMap.push(queryToken[1]);
-   						resultMap[queryToken[0]] = queryToken[1];
-    				}
-    		    }
-    			siteId = resultMap["sid"];
-    			locationName = resultMap["locationName"]; 
-    			fullParentQStr = "webCheckoutConfirmation2.jsp";
-    			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
-    			hpciCCFrameHost = resultMap["serviceUrl"];
-    			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
-    			console.log(location.pathname);
-    			console.log("SiteId :" + siteId);
-    			console.log("LocationName :" +locationName);  
-    			
-    			hpciCCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
-    				    +"locationName="+locationName
-    				    +"&sid=" + siteId
-    				    +"&reportCCType=Y"
-    				    +"&fullParentHost=" + fullParentHost
-    				    +"&fullParentQStr=" + fullParentQStr;    			  			
-    			console.log(hpciCCFrameFullUrl);
-    		});
-	
-	$('#noButton').click(function () {
-		$('#message').hide('slow');
-	});
-	$('#yesButton').click(function () {
-		$('#message').show('slow');
+	$("#toggleMessage").click(function() {
+		$("#message").toggle("slow");
+		$(this).val($(this).val() == "Show response" ? "Hide response" : "Show response");
 	});
 });
 </script>
-
 </head>
 <body>
 <!-- container class sets the page to use 100% width -->
@@ -159,7 +53,7 @@ $(document).ready(function () {
 					</ul>
 				</div>
 			</div>
-			<form id="CCAcceptForm" action="/Iframe3DSecServlet" method="post">
+			<form id="CCAcceptForm" action="/Iframe3DSecServlet" method="post" class = "checkout-confirmation">
 			<input type="hidden" name="action" value="form3DSecResponse">
 				<section>
 					<fieldset style="min-height: 100px;">
@@ -174,38 +68,52 @@ $(document).ready(function () {
 							<label>*******************</label><br />
 							<!-- Checks if signature validation passed -->
 							<c:if test="${responseMap['pxyResponse.threeDSSRS'].equals('Y')}">
-								<!-- Gets responseStatus from the response map that the iframe sent back -->
-								<label>Status: <c:out value="${responseMap['pxyResponse.responseStatus.name']}" /></label><br />
-								<!-- Gets description from the response map that the iframe sent back -->
-								<label>Description: <c:out value="${responseMap['pxyResponse.responseStatus.description']}" /></label><br />
-								<!-- Gets processorRefId from the response map that the iframe sent back -->
-								<label>Processor Reference ID: <c:out value="${responseMap['pxyResponse.processorRefId']}" /></label><br />
-								<!-- Gets merchantRefId from the response map that the iframe sent back -->
-								<label>Merchant ID: <c:out value="${globalMap['merchantRefId']}" /></label><br />
-								<!-- Gets cardType from the user input on previous page -->
-								<c:set var="mappedParams" value="${responseMap['pxyResponse.mappedParams']}" />
-								<c:set var="mappedParamsValue" value="${fn:split(mappedParams, '=')}" />
-								<label>Card Type: <c:out value="${mappedParamsValue[1]}" /></label><br />
-								<!-- Gets cardNumber  -->
+								<c:if test="${not empty responseMap['status']}">
+										<label>HPCI Status: <c:out value="${responseMap['status']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.responseStatus.name']}">
+										<label>Status Name: <c:out value="${responseMap['pxyResponse.responseStatus.name']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.responseStatus.description']}">							
+										<label>Description: <c:out value="${responseMap['pxyResponse.responseStatus.description']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.responseStatus.code']}">							
+									<label>Status Code: <c:out value="${responseMap['pxyResponse.responseStatus.code']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.responseStatus.reasonCode']}">							
+									<label>Reason Code: <c:out value="${responseMap['pxyResponse.responseStatus.reasonCode']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.responseStatus']}">							
+									<label>Status: <c:out value="${responseMap['pxyResponse.responseStatus']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['errId']}">
+									<label>HPCI Error Code: <c:out value="${responseMap['errId']}" /></label><br />	
+									<label>HPCI Description: <c:out value="${responseMap['errFullMsg']}" /></label><br />
+									<c:if test="${not empty responseMap['errParamName']}">
+										<label>HPCI Error Parameter Name: <c:out value="${responseMap['errParamName']}" /></label><br />
+									</c:if>
+									<c:if test="${not empty responseMap['errParamValue']}">
+										<label>HPCI Error Parameter Value: <c:out value="${responseMap['errParamValue']}" /></label><br />	
+									</c:if>		
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.fullNativeResp']}">							
+									<label>Native Response: <c:out value="${responseMap['pxyResponse.fullNativeResp']}" /></label><br />
+								</c:if>
+								<c:if test="${not empty responseMap['pxyResponse.processorRefId']}">
+									<label>Processor Reference ID: <c:out value="${responseMap['pxyResponse.processorRefId']}" /></label><br />
+								</c:if>
+								<!-- Gets cardNumber -->
 								<label>Token Card Number: <c:out value="${globalMap['cardNumber']}" /></label><br />
-								<!-- Gets cvvNumber  -->
+								<!-- Gets cardCVV -->
 								<label>Token CVV Number: <c:out value="${globalMap['cardCVV']}" /></label><br />
-								<!-- Gets authTxnId  -->
-								<label>AuthTxnId: <c:out value="${responseMap['pxyResponse.threeDSTransactionId']}" /></label><br />
 								<!-- Gets today's date -->
 								<label>Payment Date: <c:set var="now" value="<%=new java.util.Date()%>" /><fmt:formatDate type="both" value="${now}" /></label><br />
-								<!-- Gets amount from the user input on previous page -->
-								<label>Amount: <c:out value="${globalMap['amount']}" /></label><br />
-								<!-- Gets comment from the user input on previous page -->
-								<label>Comments: <c:out value="${globalMap['comments']}" /></label><br />
 							</c:if>
 							<!-- Signature validation failed -->
 							<c:if test="${responseMap['pxyResponse.threeDSSRS'].equals('N')}">
 								<label>Signature validation failed, please try again</label><br />
 							</c:if>
-							<label>Show Full Message?</label><br />
-								<input id="noButton" type="radio" name="radioButton" checked />No
-								<input id="yesButton" type="radio" name="radioButton" />Yes
+							<input type="button" id="toggleMessage" value="Show response" class="btn">
 							<div id="message" style="display:none; word-wrap: break-word;">
 								<label>Full Message: </label><br />
 								<c:out value="${responseMap}" />

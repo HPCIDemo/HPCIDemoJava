@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DemoUtil {
 	
@@ -75,6 +77,9 @@ public class DemoUtil {
 	public static Map<String, String> parseQueryString(String queryStr) {
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		String queryStrDecoded = "";
+		String name = "";
+		String value = "";
+		
 		if (queryStr == null)
 			return map;
 
@@ -83,10 +88,29 @@ public class DemoUtil {
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
+		
+		Pattern pat = Pattern.compile("pxyResponse.fullNativeResp(.*?)pxyResponse");
+        Matcher mat = pat.matcher(queryStrDecoded);
+        
+        String pxyFullNativeResp = "";
+        String gtyTokenpxyFullNativeResp = "";
+        
+        if(mat.find()) {
+        	pxyFullNativeResp = mat.group(0).replace("&pxyResponse","");
+        	queryStrDecoded = mat.replaceAll("&pxyResponse");
+        }
+        
+        pat = Pattern.compile("pxyResponse.gatewayToken.fullNativeResp(.*?)pxyResponse");
+        mat = pat.matcher(queryStrDecoded);
+        if(mat.find()) {
+        	gtyTokenpxyFullNativeResp = mat.group(0).replace("&pxyResponse","");
+        	queryStrDecoded = mat.replaceAll("&pxyResponse");
+        }
+        
 		String[] params = queryStrDecoded.split("&");
 		for (String param : params) {
-			String name = "";
-			String value = "";
+			name = "";
+			value = "";
 
 			String[] paramPair = param.split("=", 2);
 			if (paramPair != null && paramPair.length > 0) {
@@ -108,6 +132,39 @@ public class DemoUtil {
 			}
 			map.put(name, value);
 		}
+		
+		if(!pxyFullNativeResp.isEmpty()){
+			params = pxyFullNativeResp.split("=", 2);
+			if(params != null && params.length > 0) {
+				try{
+					name = params[0];
+					value = "";
+					if (params[1] != null && !params[1].isEmpty())
+						value = URLDecoder.decode(params[1], "UTF-8");
+
+					map.put(name, value);
+				} catch (UnsupportedEncodingException e) {
+					logMessage("Could not decode:" + value);
+				}
+			}
+		}
+		
+		if(!gtyTokenpxyFullNativeResp.isEmpty()){
+			params = gtyTokenpxyFullNativeResp.split("=", 2);
+			if(params != null && params.length > 0) {
+				try {
+					name = params[0];
+					value = "";
+					if (params[1] != null && !params[1].isEmpty())
+						value = URLDecoder.decode(params[1], "UTF-8");
+
+					map.put(name, value);
+				} catch (UnsupportedEncodingException e) {
+					logMessage("Could not decode:" + value);
+				}
+			}
+		}
+		
 		return map;
 	} // END: parseQueryString
 

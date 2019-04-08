@@ -51,13 +51,18 @@
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
 		// Please the following alert to properly display the error message
 		//alert("Error while processing credit card code:" + errorCode + "; msg:"	+ errorMsg);
+		console.log("=================Begin hpciSiteErrorHandler=================");
 		document.getElementById('errorMessage').style.display = 'block';
 
 		return deferred.reject();
+		console.log("=================End hpciSiteErrorHandler=================");
 	}
 
-	var hpciSiteSuccessHandlerV2 = function(mappedCCValue, mappedCVVValue,
-			ccBINValue) {
+	var hpciSiteSuccessHandlerV5 = function(hpciMappedCCValue, hpciMappedCVVValue, hpciCCBINValue, 
+			hpciGtyTokenValue, hpciCCLast4Value, hpciReportedFormFieldsObj, 
+			hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt) {
+
+		console.log("=================Begin hpciSiteSuccessHandlerV5=================");
 
 		// Please pass the values to the document input and then submit the form
 
@@ -66,17 +71,17 @@
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccNumInput = jQuery('#ccNum' + (iframeCounter + 1));
-		ccNumInput.val(mappedCCValue);
+		ccNumInput.val(hpciMappedCCValue);
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccCVVInput = jQuery('#ccCVV' + (iframeCounter + 1));
-		ccCVVInput.val(mappedCVVValue);
+		ccCVVInput.val(hpciMappedCVVValue);
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccBINInput = jQuery('#ccBIN' + (iframeCounter + 1));
-		ccBINInput.val(ccBINValue);
+		ccBINInput.val(hpciCCBINValue);
 
 		console.log("Success Handler");
 		jQuery('#trSummary' + (iframeCounter + 1)).html(
@@ -95,6 +100,7 @@
 			deferred.resolve();
 		}
 
+		console.log("=================End hpciSiteSuccessHandlerV5=================");		
 		return false;
 	}
 
@@ -140,8 +146,8 @@
 		var merchantRefId;
 		var counter;
 		for (counter = 0; counter < iframes.length; counter++) {
-			merchantRefId = new Date().valueOf();
-			(function(counter){
+			merchantRefId = (new Date().valueOf()) + counter;
+			(function(counter, merchantRefId){
 				jQuery.post(
 							"MultipleIframesServlet",
 							{
@@ -149,8 +155,8 @@
 								"ccCVV" : jQuery("#ccCVV" + (counter + 1)).val(),
 								"amount" : jQuery("#amount" + (counter + 1)).val(),
 								"merchantRefId" : merchantRefId,
-								"currency" : "CAD",
-								"paymentProfile" : "DEF",
+								"currency" : jQuery("#currency option:selected").val(),
+								"paymentProfile" : jQuery("#paymentProfile option:selected").val(),
 								"expiryMonth" : jQuery("#expiryMonth" + (counter + 1)).val(),
 								"expiryYear" : jQuery("#expiryYear" + (counter + 1)).val()
 							},
@@ -179,7 +185,7 @@
 									}
 								}
 							});
-			})(counter);
+			})(counter, merchantRefId);
 		}
 	}
 	function hasNextIframe() {
@@ -243,13 +249,38 @@
 						fullParentHost = location.protocol
 								.concat("//")
 								+ window.location.hostname
-								+ ":" + location.port;
+								+ (location.port ? ':' + location.port: '');
 						hpciCCFrameHost = resultMap["serviceUrl"];
+						currency = resultMap["currency"];
 						
-						console.log(location.protocol
-								.concat("//")
-								+ window.location.hostname
-								+ ":" + location.port);
+						//Setting currency drop-down list options
+		    			if(currency){
+		    				var currencyCombo = document.getElementById("currency");    				  				
+		    				queryTokenList = currency.split('/');
+		    				for(var i = 0; i < queryTokenList.length; i++){
+		    					var optionCurrency = document.createElement('option');  
+		    					queryToken = queryTokenList[i].split('=');
+		   						optionCurrency.value = queryToken[1];
+		   						optionCurrency.text = queryToken[0];
+		   						currencyCombo.add(optionCurrency, 0);	
+		    				}
+		    			}
+						
+		    			//Setting Payment Profile drop-down list options
+		    			paymentProfile= resultMap["paymentProfile"];
+		    			if(paymentProfile){    				
+		    				var paymentProfileCombo = document.getElementById("paymentProfile");    				  				
+		    				queryTokenList = paymentProfile.split('/');
+		    				for(var i = 0; i < queryTokenList.length; i++){
+		    					var optionPaymentProfile = document.createElement('option');  
+		    					queryToken = queryTokenList[i].split('=');
+		   						optionPaymentProfile.value = queryToken[1];
+		   						optionPaymentProfile.text = queryToken[0];
+		   						paymentProfileCombo.add(optionPaymentProfile, 0);	
+		    				}
+		    			}
+						
+						console.log(fullParentHost);
 						console.log(location.pathname);
 						console.log("SiteId :" + siteId);
 						console.log("LocationName :"
@@ -259,17 +290,12 @@
 						//Set the "src" attribute for the Hpci iframe
 						for (i = 0; i < iframes.length; i++) {
 							CCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
-									+ "locationName="
-									+ locationName
-									+ "&sid="
-									+ siteId
+									+ "locationName=" + locationName
+									+ "&sid=" + siteId
 									//	+ "&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
-									+ "&ccNumTokenIdx="
-									+ (i + 1)
-									+ "&fullParentHost="
-									+ fullParentHost
-									+ "&fullParentQStr="
-									+ fullParentQStr;
+									+ "&ccNumTokenIdx=" + (i + 1)
+									+ "&fullParentHost=" + fullParentHost
+									+ "&fullParentQStr=" + fullParentQStr;
 
 									jQuery("#" + iframes[i].id)
 											.attr("src",
@@ -310,21 +336,14 @@
 				location.reload(true);
 			});
 			
-			jQuery('#noButton1').click(function () {
-				jQuery('#message1').hide('slow');
+			jQuery("#toggleMessage1").click(function() {
+				jQuery("#message1").toggle("slow");
+				jQuery(this).val(jQuery(this).val() == "Show response" ? "Hide response" : "Show response");
 			});
-			
-			jQuery('#yesButton1').click(function () {
-				jQuery('#message1').show('slow');
+			jQuery("#toggleMessage2").click(function() {
+				jQuery("#message2").toggle("slow");
+				jQuery(this).val(jQuery(this).val() == "Show response" ? "Hide response" : "Show response");
 			});
-			
-			jQuery('#noButton2').click(function () {
-				jQuery('#message2').hide('slow');
-			});
-			
-			jQuery('#yesButton2').click(function () {
-				jQuery('#message2').show('slow');
-			}); 
 			
 			jQuery('input:text').on('blur', function() {
 				if (jQuery(this).val()) {
@@ -384,40 +403,30 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-xs-5 col-sm-3 col-md-3">
-											<select id="expiryMonth1" name="expiryMonth1"
-												class="selectpicker">
-												<option value="01">01 - January</option>
-												<option value="02">02 - February</option>
-												<option value="03">03 - March</option>
-												<option value="04">04 - April</option>
-												<option value="05">05 - May</option>
-												<option value="06">06 - June</option>
-												<option value="07">07 - July</option>
-												<option value="08">08 - August</option>
-												<option value="09">09 - September</option>
-												<option value="10">10 - October</option>
-												<option value="11">11 - November</option>
-												<option value="12">12 - December</option>
-											</select>
-										</div>
-										<div class="col-xs-2 col-sm-2 col-md-2">
-											<!-- id is used in confirmation.jsp -->
-											<select id="expiryYear1" name="expiryYear1"
-												class="selectpicker">
-												<option value="17">2017</option>
-												<option value="18">2018</option>
-												<option value="19">2019</option>
-												<option value="20">2020</option>
-												<option value="21">2021</option>
-												<option value="22">2022</option>
-												<option value="23">2023</option>
-												<option value="24">2024</option>
-												<option value="25">2025</option>
-												<option value="26">2026</option>
-												<option value="27">2027</option>
-												<option value="28">2028</option>
-											</select>
+										<div class="booking-form__field">
+											<label style="margin-left: 0.75rem;font-size: 0.9rem;">Expiry date</label>
+									    </div>
+									    <div>
+											<div class="col-xs-4 col-sm-3 col-md-2">
+												<div class="booking-form__field">
+													<div class="input-text">
+														<input id="expiryMonth1" type="text" name="expiryMonth1">
+														<label for="expiryMonth">
+														Month
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="col-xs-4 col-sm-3 col-md-2">
+												<div class="booking-form__field">
+													<div class="input-text">
+														<input id="expiryYear1" type="text" name="expiryYear1">
+														<label for="expiryYear">
+														Year
+														</label>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 									<div class="row">
@@ -440,7 +449,6 @@
 									</div>
 
 								</div>
-
 								<div class="form-group">
 									<div class="row">
 										<div class="col-xs-6">
@@ -455,39 +463,30 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-xs-5 col-sm-3 col-md-3">
-											<select id="expiryMonth2" name="expiryMonth2"
-												class="selectpicker">
-												<option value="01">01 - January</option>
-												<option value="02">02 - February</option>
-												<option value="03">03 - March</option>
-												<option value="04">04 - April</option>
-												<option value="05">05 - May</option>
-												<option value="06">06 - June</option>
-												<option value="07">07 - July</option>
-												<option value="08">08 - August</option>
-												<option value="09">09 - September</option>
-												<option value="10">10 - October</option>
-												<option value="11">11 - November</option>
-												<option value="12">12 - December</option>
-											</select>
-										</div>
-										<div class="col-xs-2 col-sm-2 col-md-2">
-											<!-- id is used in confirmation.jsp -->
-											<select id="expiryYear2" name="expiryYear2"
-												class="selectpicker">
-												<option value="17">2017</option>
-												<option value="18">2018</option>
-												<option value="19">2019</option>
-												<option value="20">2020</option>
-												<option value="21">2021</option>
-												<option value="22">2022</option>
-												<option value="23">2023</option>
-												<option value="24">2024</option>
-												<option value="25">2025</option>
-												<option value="26">2026</option>
-												<option value="27">2027</option>
-											</select>
+										<div class="booking-form__field">
+											<label style="margin-left: 0.75rem;font-size: 0.9rem;">Expiry date</label>
+									    </div>
+									    <div>
+											<div class="col-xs-4 col-sm-3 col-md-2">
+												<div class="booking-form__field">
+													<div class="input-text">
+														<input id="expiryMonth2" type="text" name="expiryMonth2">
+														<label for="expiryMonth">
+														Month
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="col-xs-4 col-sm-3 col-md-2">
+												<div class="booking-form__field">
+													<div class="input-text">
+														<input id="expiryYear2" type="text" name="expiryYear2">
+														<label for="expiryYear">
+														Year
+														</label>
+													</div>
+												</div>
+											</div>
 										</div>
 										<div class="booking-form__field">
 											<div class="input-text col-xs-6">
@@ -504,6 +503,28 @@
 												<input type="hidden" id="ccBIN2" name="ccBIN2" value=""
 													class="form-control">
 											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="booking-form__field form-group">
+										<div class="col-xs-4 col-sm-3 col-md-4">
+											<label>Currency:</label>
+										</div>
+										<div class="col-xs-4 col-sm-3 col-md-5">
+											<select id="currency" name="currency">									
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="booking-form__field form-group">
+										<div class="col-xs-4 col-sm-3 col-md-4">
+											<label>Payment Profile:</label>
+										</div>
+										<div class="col-xs-4 col-sm-3 col-md-5">
+											<select id="paymentProfile" name="paymentProfile">									
+											</select>
 										</div>
 									</div>
 								</div>
@@ -532,21 +553,13 @@
 							<div id = "result1">
 							</div>
 							<br/>
-							<label>Show Full Message?</label><br />
-							<input id ="noButton1" type = "radio" name="yesNo1" checked="checked"/>
-							<label for = "noButton1">No</label>
-							<input id="yesButton1" type="radio" name="yesNo1" />
-							<label for = "yesNoButton1">Yes</label>
+							<input type="button" id="toggleMessage1" value="Show response" class="btn">						
 							<div id = "message1" style="word-wrap: break-word;">
 							</div><br/><br/>
 							<div id = "result2">
 							</div>
 							<br/>
-							<label>Show Full Message?</label><br />
-							<input id ="noButton2" type = "radio" name="yesNo2" checked="checked"/>
-							<label for = "noButton2">No</label>
-							<input id="yesButton2" type="radio" name="yesNo2" />
-							<label for = "yesNoButton2">Yes</label>
+							<input type="button" id="toggleMessage2" value="Show response" class="btn">
 							<div id = "message2" style="word-wrap: break-word;">
 							</div><br/><br/>
 							<br /> <input Type="button"  id = "backBtn" class="btn btn-primary" value="Back"></input><br />

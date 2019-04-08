@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,7 +46,7 @@ public class MultipleIframesServlet extends HttpServlet{
 			
 			// Initiate the call back
 			out.print("sid;"+mapConfig.get("sid")
-					+","+"locationName;" +mapConfig.get("locationName")
+					+","+"locationName;" +mapConfig.get("multipleIframeslocationName")
 					+","+"currency;" +mapConfig.get("currency")
 					+","+"paymentProfile;" +mapConfig.get("paymentProfile")
 					+","+"serviceUrl;"+ mapConfig.get("serviceUrl"));							
@@ -72,6 +73,7 @@ public class MultipleIframesServlet extends HttpServlet{
 		merchantRefId = request.getParameter("merchantRefId");
 		String currency = request.getParameter("currency");
 		String paymentProfile = request.getParameter("paymentProfile");
+		String customerId = "";
 //		comments = request.getParameter("comment");
 //		String country = request.getParameter("country");
 //		String zip = request.getParameter("zip");
@@ -79,6 +81,9 @@ public class MultipleIframesServlet extends HttpServlet{
 //		String city = request.getParameter("city");
 //		String address1 = request.getParameter("address1");
 //		String address2 = request.getParameter("address2");
+		
+		if(mapConfig == null)
+			mapConfig = DemoUtil.getConfigProperties();
 
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();
@@ -96,17 +101,29 @@ public class MultipleIframesServlet extends HttpServlet{
 		// Continue to populate hpciRequestParamMap with all the required
 		// information
 		//hpciRequestParamMap.put("pxyCreditCard.cardType", cardType);
-		hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", cardNumber);
-		hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
-		hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
-		hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", cardCVV);
-		hpciRequestParamMap.put("pxyTransaction.txnAmount", amount);
-		hpciRequestParamMap.put("pxyTransaction.txnCurISO", currency);
+		if (cardNumber != null && !cardNumber.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.creditCardNumber", cardNumber);
+		if (expiryMonth != null && !expiryMonth.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.expirationMonth", expiryMonth);
+		if (expiryYear != null && !expiryYear.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.expirationYear", expiryYear);
+		if (cardCVV != null && !cardCVV.isEmpty())
+			hpciRequestParamMap.put("pxyCreditCard.cardCodeVerification", cardCVV);
+		if (amount != null && !amount.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnAmount", amount);
+		if (currency != null && !currency.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnCurISO", currency);
+		if (merchantRefId == null || merchantRefId.isEmpty()){
+			merchantRefId = UUID.randomUUID().toString().substring(0,15);
+		}
 		hpciRequestParamMap.put("pxyTransaction.merchantRefId", merchantRefId);
-		hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
-		hpciRequestParamMap.put("pxyTransaction.txnComment", comments);
-		hpciRequestParamMap.put("pxyCustomerInfo.email", "email@email.com");
-		hpciRequestParamMap.put("pxyCustomerInfo.customerId", "111");
+		if (paymentProfile != null && !paymentProfile.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnPayName", paymentProfile);
+		if (comments != null && !comments.isEmpty())
+			hpciRequestParamMap.put("pxyTransaction.txnComment", comments);
+		hpciRequestParamMap.put("pxyCustomerInfo.email", "user@testemail.com");
+		customerId = UUID.randomUUID().toString().substring(0,15);
+		hpciRequestParamMap.put("pxyCustomerInfo.customerId", customerId);
 //		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.firstName", firstName);
 //		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.lastName", lastName);
 //		hpciRequestParamMap.put("pxyCustomerInfo.billingLocation.address", address1);

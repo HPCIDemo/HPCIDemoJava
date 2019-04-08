@@ -23,20 +23,16 @@ fieldset {
 	margin-top: 10px;
 }
 
-fieldset legend { //
-	background: #1F497D;
-	background: #FFF; //
-	color: #00c8d0;
-	color: #026f94;
-	padding: 5px 10px;
-	font-size: 32px;
-	border-radius: 5px 5px 0px 0px; //
-	box-shadow: 0 0 0 5px #ddd;
-	border-color: #00c8d0;
-	border-width: 0px 0px 3px;
-	margin-left: 10px;
-	margin-right: 60px; //
-	width: auto;
+fieldset legend {
+	background: #FFF;
+ 	color: #026f94; 
+ 	padding: 2px 4px;
+ 	font-size: 32px; 
+ 	border-radius: 5px 5px 0px 0px;
+ 	border-color: #00c8d0; 
+ 	border-width: 0px 0px 3px;
+ 	margin-left: 10px;
+ 	margin-right: 60px;
 }
 
 .form-group {

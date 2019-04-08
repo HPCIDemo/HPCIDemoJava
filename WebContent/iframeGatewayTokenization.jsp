@@ -29,11 +29,17 @@
 
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
 		// Please the following alert to properly display the error message
+		console.log("=================Begin hpciSiteErrorHandler=================");
 		//alert("Error while processing credit card code:" + errorCode + "; msg:"	+ errorMsg);
 		document.getElementById('errorMessage').style.display = 'block';
+		console.log("=================End hpciSiteErrorHandler=================");
 	}
 	
-	var hpciSiteSuccessHandlerV3 = function(mappedCCValue, mappedCVVValue, ccBINValue, gtyToken) {
+	var hpciSiteSuccessHandlerV5 = function(hpciMappedCCValue, hpciMappedCVVValue, hpciCCBINValue, 
+			hpciGtyTokenValue, hpciCCLast4Value, hpciReportedFormFieldsObj, 
+			hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt) {
+
+		console.log("=================Begin hpciSiteSuccessHandlerV5=================");
 		// Please pass the values to the document input and then submit the form
 		
 		// No errors from iframe so hide the errorMessage div
@@ -41,27 +47,29 @@
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccNumInput = document.getElementById("ccNum");
-		ccNumInput.value = mappedCCValue;
+		ccNumInput.value = hpciMappedCCValue;
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccCVVInput = document.getElementById("ccCVV");
-		ccCVVInput.value = mappedCVVValue;
+		ccCVVInput.value = hpciMappedCVVValue;
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var ccBINInput = document.getElementById("ccBIN");
-		ccBINInput.value = ccBINValue;
+		ccBINInput.value = hpciCCBINValue;
 
 		// Name of the input (hidden) field required by ecommerce site
 		// Typically this is a hidden input field.
 		var gtyTokenInput = document.getElementById("gtyToken");
-		gtyTokenInput.value = gtyToken;
+		gtyTokenInput.value = hpciGtyTokenValue;
 		
 		//Display the tokenization result message.
 		document.getElementById("gtySummary").className = "";
 		document.getElementById("message").innerHTML = "Gateway token: " + gtyToken;
 		document.getElementById("tokenizeButton").disabled = true;
+		
+		console.log("=================End hpciSiteSuccessHandlerV5=================");
 	}
 
 	var hpciCCPreliminarySuccessHandler = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue) {
@@ -75,6 +83,8 @@
 	}
 
 	var hpciCCDigitsSuccessHandlerV2 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, hpciCCEnteredLengthValue) {
+		console.log("================ Begin hpciCCDigitsSuccessHandlerV2================");
+		
 		// Use to enable credit card digits key press
 		sendHPCIChangeClassMsg("ccNum-wrapper", "input-text input-text--validatable");
 		
@@ -117,9 +127,12 @@
 			document.getElementById("tokenizeButton").disabled = true;
 			document.getElementById("errorMessage2").style.display = "block";
 		}
+		
+		console.log("=================End hpciCCDigitsSuccessHandlerV2==================");
 	}
 	
-	var hpciCVVDigitsSuccessHandler = function(hpciCVVDigitsValue) {
+	var hpciCVVDigitsSuccessHandler = function(hpciCVVDigitsValue, hpciCVVValidValue) {
+		console.log("=================Begin hpciCVVDigitsSuccessHandler===========");
 		// Use to enable CVV digits key press
 		sendHPCIChangeClassMsg("ccCVV-wrapper", "input-text input-text--validatable");
 		
@@ -130,9 +143,10 @@
 			}else{
 				sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--invalid input-text__input--populated");
 			}
-		} else if ((cvvLength >= 3) && (cvvLength <= 4)) {
+		} else if ((cvvLength >= 3) && (cvvLength <= 4) && (hpciCVVValidValue == "Y")) {
 			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--populated");
 		}
+		console.log("=================End hpciCVVDigitsSuccessHandler=============");
 	}
 </script>
 <script type="text/javascript">
@@ -161,9 +175,9 @@ jQuery(document).ready(function() {
     			siteId = resultMap["sid"];
     			locationName = resultMap["locationName"]; 
     			fullParentQStr = location.pathname;
-    			fullParentHost = location.protocol.concat("//") + window.location.hostname +":" +location.port;
+    			fullParentHost = location.protocol.concat("//") + window.location.hostname + (location.port ? ':' + location.port: '');
     			hpciCCFrameHost = resultMap["serviceUrl"];
-    			console.log(location.protocol.concat("//") + window.location.hostname +":" +location.port);
+    			console.log(fullParentHost);
     			console.log(location.pathname);
     			console.log("SiteId :" + siteId);
     			console.log("LocationName :" +locationName);
@@ -261,42 +275,32 @@ jQuery(document).ready(function() {
 									id is used in confirmation.jsp
 							</div> -->
 						</div><!-- form-group -->
-						<!-- Input form-group (exp, month, cvv) -->
-						<div class="form-group">
-							<div class="col-xs-5 col-sm-3 col-md-3">
-								<select id="ccExpMonth" name="ccExpMonth" class="selectpicker">
-									<option value="01">01 - January</option>
-									<option value="02">02 - February</option>
-									<option value="03">03 - March</option>
-									<option value="04">04 - April</option>
-									<option value="05">05 - May</option>
-									<option value="06">06 - June</option>
-									<option value="07">07 - July</option>
-									<option value="08">08 - August</option>
-									<option value="09">09 - September</option>
-									<option value="10">10 - October</option>
-									<option value="11">11 - November</option>
-									<option value="12">12 - December</option>
-								</select>
+						<!-- Input form-group (exp, month, cvv) -->						
+						<div class="booking-form__field">
+							<label>Expiry date</label>
+					    </div>
+					    <div>
+							<div class="col-xs-4 col-sm-3 col-md-2">
+								<div class="booking-form__field">
+									<div class="input-text">
+										<input id="ccExpMonth" type="text" name="ccExpMonth">
+										<label for="ccExpMonth">
+										Month
+										</label>
+									</div>
+								</div>
 							</div>
-							<div class="col-xs-2 col-sm-2 col-md-2">		
-								<!-- id is used in confirmation.jsp -->
-								<select id="ccExpYear" name="ccExpYear" class="selectpicker">
-									<option value="17">2017</option>
-									<option value="18">2018</option>
-									<option value="19">2019</option>
-									<option value="20">2020</option>
-									<option value="21">2021</option>
-									<option value="22">2022</option>
-									<option value="23">2023</option>
-									<option value="24">2024</option>
-									<option value="25">2025</option>
-									<option value="26">2026</option>
-									<option value="27">2027</option>
-									<option value="28">2028</option>
-								</select>
+							<div class="col-xs-4 col-sm-3 col-md-2">
+								<div class="booking-form__field">
+									<div class="input-text">
+										<input id="ccExpYear" type="text" name="ccExpYear">
+										<label for="ccExpYear">
+										Year
+										</label>
+									</div>
+								</div>
 							</div>
-						</div><!-- form-group -->
+						</div>
 					</fieldset>
 					<br />
 					<fieldset>
