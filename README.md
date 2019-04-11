@@ -1,4 +1,4 @@
-HPCIDemoJava v1.0 Jan 7 2016
+HPCIDemoJava v5.0 April 11 2019
 ================
 
 HostedPCI Demo App
@@ -53,13 +53,10 @@ Phone Session:
 
 Release information
 ===================
-Version 1.0, Jan 7 2016
+Version 5.0, April 11 2019
 
 Java JDK 8
-Jquery 2.1.1
-Bootstrap 3.2
-Jetty 8.1.2
-Browser
+Jetty 9.4.15
 
 Installation
 ============
@@ -68,21 +65,32 @@ Installation
 Using RunJettyRun plugin within Eclipse, or using JettyRunner.jar and HPCIDemoJava.jar from 
 terminal/command prompt.
 
-Using Eclipse:
+Option 1 - Using Eclipse:
 ==============
 1. Set RunJettyRun to be assosiated with HPCIDemoJava and set it to 8799 port (If you want a different port you need to change the port in webCheckoutForm.jsp too).
 2. Run using Jetty.
 3. Open your browser and go to http://localhost:8799/home.jsp and choose one of the services you want to try.
 
-Using Jetty Runner:
+Option 2 - Using Jetty Runner:
 ===================
 1. Open the terminal/command prompt and go to the path_to_HPCIDemoJava/war folder.
-2. Type “java -jar jetty-runner.jar --stats unsecure --log yyyy_mm_dd-requests.log --port 8799 --out yyyy_mm_dd-output.txt HPCIDemoJava.war”
+2. Type 
+```java -jar jetty-runner.jar --stats unsecure --log yyyy_mm_dd-requests.log --port 8799 --out yyyy_mm_dd-output.txt HPCIDemoJava.war```
 3. If everything went well, you should see something like this and a blinking cursor afterwards:
-2016-01-07 10:33:36.843:INFO::main: Logging initialized @71ms
-2016-01-07 10:33:36.848:INFO:oejr.Runner:main: Runner
-2016-01-07 10:33:36.850:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt
-4. Open any browser and type in http://localhost:8799/home.jsp and choose one of the services you want to try.
+ 2019-04-11 14:30:54.262:INFO::main: Logging initialized @246ms to org.eclipse.jetty.util.log.StdErrLog
+2019-04-11 14:30:54.273:INFO:oejr.Runner:main: Runner
+2019-04-11 14:30:54.281:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt
+4. Open any browser and type in ```http://localhost:8799/home.jsp``` and choose one of the services you want to try.
+
+Option 3 - Setup local SSL certificate for Jetty Runner:
+================================
+1. Open the terminal/command prompt and go to the path_to_HPCIDemoJava/war folder
+2. Type ```java -jar jetty-runner.jar --config jetty-config.xml --log yyyy_mm_dd-requests.log --out yyyy_mm_dd-output.txt HPCIDemoJava.war```
+3. If everything went well, you should see something like this and a blinking cursor afterwards:
+2019-04-11 14:30:54.262:INFO::main: Logging initialized @246ms to org.eclipse.jetty.util.log.StdErrLog
+2019-04-11 14:30:54.273:INFO:oejr.Runner:main: Runner
+2019-04-11 14:30:54.281:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt
+4. Open any browser and type in ```cc.localhpc.com:8799``` and choose one of the services you want to try
 
 How to use the Web Checkout app:
 ================================
