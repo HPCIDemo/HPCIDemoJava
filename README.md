@@ -92,7 +92,7 @@ Running the App:
 **```2019-04-11 14:30:54.262:INFO::main: Logging initialized @246ms to org.eclipse.jetty.util.log.StdErrLog
 2019-04-11 14:30:54.273:INFO:oejr.Runner:main: Runner
 2019-04-11 14:30:54.281:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt```**
-4. Open any browser and type in ```cc.localhpc.com:8799``` and choose one of the services you want to try
+4. Open any browser and type in **```cc.localhpc.com:8799```** and choose one of the services you want to try
 
 How to use the Web Checkout app:
 ================================
