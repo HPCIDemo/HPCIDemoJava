@@ -5,7 +5,7 @@
 <entry key="apiType">pxyhpci</entry>
 <entry key="apiVersion">1.0.1</entry>
 <entry key="locationName">javasample2</entry>
-<entry key="multipleIframeslocationName">javasample2</entry>
+<entry key="multipleIframeslocationName">multipleIframes</entry>
 <entry key="cvvOnlyLocationName">checkout1cvvonly</entry>
 <entry key="ccOnlyLocationNameSpitMode">cconly</entry>
 <entry key="cvvOnlyLocationNameSpitMode">cvvonly</entry>
