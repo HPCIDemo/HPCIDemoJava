@@ -10,6 +10,7 @@
 <entry key="ccOnlyLocationNameSpitMode">cconly</entry>
 <entry key="cvvOnlyLocationNameSpitMode">cvvonly</entry>
 <entry key="autofillLocationName">ccscan</entry>
+<entry key="achLocationName">ach1</entry>
 <entry key="name">HostedPCI configuration</entry>
 <entry key="sid">528160</entry>
 <entry key="userName">sampqa1stgAdmAPI</entry>
