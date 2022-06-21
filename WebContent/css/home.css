@@ -22,19 +22,19 @@ fieldset {
 }
 
 fieldset legend {
-	//background: #1F497D;
+	/*background: #1F497D;*/
 	background: #FFF;
-	//color: #fff;
+	/*color: #fff;*/
 	color: #026f94;
 	padding: 5px 10px;
 	font-size: 32px;
 	border-radius: 5px 5px 0px 0px;
-	//box-shadow: 0 0 0 5px #ddd;
+	/*box-shadow: 0 0 0 5px #ddd;*/
 	border-color:#00c8d0;
 	border-width: 0px 0px 3px;
 	margin-left: 10px;
 	margin-right: 60px;
-	//width: auto;
+	/*width: auto;*/
 }
 .btn{
 	width:235px;
@@ -52,4 +52,15 @@ fieldset legend {
 
 #iframe-tokenization{
 	display: none;
+}
+@media (min-width: 1000px) {
+	body {
+		font-size: 1.5rem !important;
+	}
+	.input-text, input[type="text"]{
+    	font-size: 1.3rem;
+	}
+	.btn {
+		font-size: inherit;
+	}
 }

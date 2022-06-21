@@ -1,67 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>HPCIDemoJava8</display-name>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	id="WebApp_ID" version="3.0">
+  <display-name>HPCIDemoJava</display-name>
   <welcome-file-list>
     <welcome-file>home.jsp</welcome-file>
-  </welcome-file-list>
-  <servlet>
-    <description></description>
-    <servlet-name>IframeServlet</servlet-name>
-    <servlet-class>com.hpci.demo.IframeServlet</servlet-class>
-    <url-pattern>/IframeServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>Iframe3DSecServlet</servlet-name>
-    <servlet-class>com.hpci.demo.Iframe3DSecServlet</servlet-class>
-    <url-pattern>/Iframe3DSecServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>MultipleIframesServlet</servlet-name>
-    <servlet-class>com.hpci.demo.MultipleIframesServlet</servlet-class>
-    <url-pattern>/MultipleIframesServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>PhoneSessionServlet</servlet-name>
-    <servlet-class>com.hpci.demo.PhoneSessionServlet</servlet-class>
-    <url-pattern>/PhoneSessionServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>CvvOnlyServlet</servlet-name>
-    <servlet-class>com.hpci.demo.CvvOnlyIframeServlet</servlet-class>
-    <url-pattern>/CvvOnlyServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>FileDispatchServlet</servlet-name>
-    <servlet-class>com.hpci.demo.FileDispatchServlet</servlet-class>
-    <url-pattern>/FileDispatchServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>PaymentMsgDispatchServlet</servlet-name>
-    <servlet-class>com.hpci.demo.PaymentMsgDispatchServlet</servlet-class>
-    <url-pattern>/PaymentMsgDispatchServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>GatewayTokenizationServlet</servlet-name>
-    <servlet-class>com.hpci.demo.GatewayTokenizationServlet</servlet-class>
-    <url-pattern>/GatewayTokenizationServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>IframeSplitModeServlet</servlet-name>
-    <servlet-class>com.hpci.demo.IframeSplitModeServlet</servlet-class>
-    <url-pattern>/IframeSplitModeServlet</url-pattern>
-  </servlet>
-  <servlet>
-    <description></description>
-    <servlet-name>IframeAutofillServlet</servlet-name>
-    <servlet-class>com.hpci.demo.IframeAutofillServlet</servlet-class>
-    <url-pattern>/IframeAutofillServlet</url-pattern>
-  </servlet>
+  </welcome-file-list>  
 </web-app>

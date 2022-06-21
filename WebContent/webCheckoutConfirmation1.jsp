@@ -15,6 +15,7 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"
 	rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
+<link rel="shortcut icon" href="./favicon-new.png">
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
@@ -72,7 +73,7 @@ $(document).ready(function () {
 <div class="container">
 	<!-- row class sets the margins -->
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
-		<div class="col-md-7 col-centered">
+		<div class="col-md-7 col-lg-10 col-centered">
 			<div class="demo-navbar">
 				<div class="row">
 					<ul>

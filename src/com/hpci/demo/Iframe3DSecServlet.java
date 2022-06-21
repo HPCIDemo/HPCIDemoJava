@@ -47,7 +47,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 		if(request.getParameterMap().containsKey("flag")){
 			flag = request.getParameter("flag");
 		}
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 
 		if(flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -77,7 +77,7 @@ public class Iframe3DSecServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		String customerId = "";
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 		
 		if(action.equals("formRequest")) {
 			// Get request parameters from form.jsp (all the attributes that the

@@ -33,7 +33,7 @@ public class MultipleIframesServlet extends HttpServlet{
 		if(request.getParameterMap().containsKey("flag")){
 					flag = request.getParameter("flag");
 		}
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 		
 		if(flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -83,7 +83,7 @@ public class MultipleIframesServlet extends HttpServlet{
 //		String address2 = request.getParameter("address2");
 		
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();

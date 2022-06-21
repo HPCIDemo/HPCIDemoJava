@@ -29,7 +29,7 @@ public class PhoneSessionServlet extends HttpServlet {
 					flag = request.getParameter("flag");
 		}
 		// Populate hpciRequestParamMap with all the needed pairs of information
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 		
 		if(flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -53,7 +53,7 @@ public class PhoneSessionServlet extends HttpServlet {
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();
 		// Populate hpciRequestParamMap with all the needed pairs of information
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 		
 		hpciRequestParamMap.put("apiVersion",mapConfig.get("apiVersion"));
 		hpciRequestParamMap.put("apiType", mapConfig.get("apiType"));

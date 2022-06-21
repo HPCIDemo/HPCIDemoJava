@@ -5,12 +5,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>HostedPCI Demo App Confirmation Page</title>
+<title>HostedPCI Demo App  - Confirmation Page</title>
 <!-- Bootstrap 3.2.0-->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
-
+<link rel="shortcut icon" href="./favicon-new.png">
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
@@ -27,7 +27,7 @@ $(document).ready(function () {
 <div class="container">
 	<!-- row class sets the margins -->
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
-		<div class="col-md-7 col-centered">
+		<div class="col-md-7 col-lg-10 col-centered">
 			<div class="demo-navbar">
 				<div class="row">
 					<ul>
@@ -82,20 +82,44 @@ $(document).ready(function () {
 							<c:if test="${not empty map['pxyResponse.processorRefId']}">
 								<label>Processor Reference ID: <c:out value="${map['pxyResponse.processorRefId']}" /></label><br />
 							</c:if>
-							<!-- Gets cardNumber(token)  -->
-							<label>Token Card Number: <c:out value="${globalMap['cardNumber']}" /></label><br />
-							<!-- Gets cvvNumber(token)  -->
-							<label>Token CVV Number: <c:out value="${globalMap['cardCVV']}" /></label><br />
+							<c:if test="${not empty globalMap['cardNumber']}">
+								<!-- Gets cardNumber(token)  -->
+								<label>Token Card Number: <c:out value="${globalMap['cardNumber']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['cardCVV']}">
+								<!-- Gets cvvNumber(token)  -->
+								<label>Token CVV Number: <c:out value="${globalMap['cardCVV']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['achNum']}">
+								<label>ACH Token Number: <c:out value="${globalMap['achNum']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['achLast4']}">
+								<label>ACH Last 4 Digits: <c:out value="${globalMap['achLast4']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['achToken1']}">
+								<label>ACH Token 1: <c:out value="${globalMap['achToken1']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['achToken2']}">
+								<label>ACH Token 2: <c:out value="${globalMap['achToken2']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['achToken3']}">
+								<label>ACH Token 3: <c:out value="${globalMap['achToken3']}" /></label><br />
+							</c:if>
+							<c:if test="${not empty globalMap['achToken4']}">
+								<label>ACH Token 4: <c:out value="${globalMap['achToken4']}" /></label><br />
+							</c:if>
 							<!-- Gets today's date -->
 							<label>
 								Payment Date: <c:set var="now" value="<%=new java.util.Date()%>" />
 								<fmt:formatDate type="both" value="${now}" />
 							</label><br />
-							<input type="button" id="toggleMessage" value="Show response" class="btn">
-							<div id="message">
-								<label>Full Message: </label><br />
-								<c:out value="${map}" />
-							</div><br />
+							<c:if test="${not empty map}">
+								<input type="button" id="toggleMessage" value="Show response" class="btn">
+								<div id="message">
+									<label>Full Message: </label><br />
+									<c:out value="${map}" />
+								</div><br />
+							</c:if>
 							<label>*******************</label><br /> Thank you for using Hosted PCI.<br />
 							<br /> <input Type="button" class="btn btn-primary" value="Back" onClick="history.go(-1);return true;"></input>
 						</div>

@@ -17,8 +17,11 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DemoUtil {
+	
+	private static String SETTINGS_FILE_NAME_DEF = "HostedPCIConfig.xml";
 	
 	// The callUrl method, it needs a complete url + populated map of pairs
 	// (key,value)
@@ -44,6 +47,13 @@ public class DemoUtil {
 			URL url = new URL(urlString);
 			conn = url.openConnection();
 			conn.setDoOutput(true);
+			System.out.println("====================================");
+			System.out.printf("Calling URL: %n 	%s %n", urlString);
+			System.out.println("Request parameters:");
+			paramMap.forEach((k,v) -> {
+				System.out.printf("	%s=%s%n",k, v);
+			});
+			
 			OutputStreamWriter wr = new OutputStreamWriter(
 					conn.getOutputStream());
 			wr.write(data);
@@ -68,6 +78,30 @@ public class DemoUtil {
 			}
 			return map.toString();
 		}
+		
+		Map<String, String> sortedMap = null;
+
+		if (urlReturnValue != null && !urlReturnValue.isEmpty()) {
+			sortedMap = parseQueryString(urlReturnValue);
+			if (sortedMap != null) {
+				System.out.println("================Begin HPCI Response log(formatted)===========");
+
+				sortedMap = sortedMap.entrySet().stream()
+						.sorted(Map.Entry.comparingByKey()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(e1, e2) -> e1, LinkedHashMap::new));
+
+				sortedMap.forEach((k, v) -> {
+					if(!k.isEmpty())
+						System.out.println(k + "=" + v);
+				});
+				System.out.println("================End HPCI Response log(formatted)===========");
+			}
+			else {
+				System.out.printf("Response:%n	%s%n", urlReturnValue);
+				System.out.println("====================================");
+			}
+		}
+		
 		return urlReturnValue;
 		
 	} //END: callUrl
@@ -173,28 +207,31 @@ public class DemoUtil {
 		System.out.println(msg);
 	}
 			
-	public static Map<String, String> getConfigProperties(){
+	public static Map<String, String> getConfigProperties(String settingsFileName){
 		Map<String, String> mapConfig = new LinkedHashMap<String, String>();
 		String homeDir = System.getProperty("user.home");
 		String osName = System.getProperty("os.name");
 		String configFile;
+		String fileName = SETTINGS_FILE_NAME_DEF;
+		if(settingsFileName != null && !settingsFileName.isEmpty())
+			fileName = settingsFileName;
 		
 		if(osName.toUpperCase().indexOf("WINDOWS")>-1)
-			configFile = homeDir + "\\" + "HostedPCIConfig.xml";			
+			configFile = homeDir + "\\" + fileName;			
 		else
-			configFile = homeDir + "/"+"HostedPCIConfig.xml";
+			configFile = homeDir + "/" + fileName;
 		
 		try (InputStream in = new FileInputStream(configFile)) {			
 			Properties prop = new Properties();
 			prop.loadFromXML(in);
 									
-			System.out.println("####Properties. Loading from xml ####");
+			System.out.printf("####Begin Properties. Loading from xml ####%n", fileName);
 			for (String property : prop.stringPropertyNames()) {
 				String value = prop.getProperty(property);
 				System.out.println(property + "=" + value);
 				mapConfig.put(property, value);
 			}
-			System.out.println("#####################################");
+			System.out.println("###########End Properties#################");
 			return mapConfig;			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -11,9 +11,8 @@
 
 <!-- Font-Awesome -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-
 <link href="css/checkout.css" rel="stylesheet">
-
+<link rel="shortcut icon" href="./favicon-new.png">
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
@@ -336,7 +335,7 @@ jQuery(document).ready(function() {
 	</div>
 	<div class="form-group">
 		<!-- col-md-7 col-centered class uses the bootstrap grid system to use 7/12 of the screen and place it in the middle -->
-		<div class="col-md-7 col-centered">
+		<div class="col-md-7 col-lg-10 col-centered">
 			<div class="demo-navbar">
 				<div class="row">
 					<ul>
@@ -348,7 +347,7 @@ jQuery(document).ready(function() {
 			<!-- IMPORTANT: id CCAcceptForm needs to match the ID's in the HostedPCI script code -->
 			<!-- So if you change this ID, make sure to change it in all other places -->
 			<!-- Action points to the servlet -->
-			<form id="CCAcceptForm" action="/IframeServlet" method="post" class="form-horizontal">
+			<form id="CCAcceptForm" action="./IframeServlet" method="post" class="form-horizontal">
 				<fieldset id = "checkout">
 					<!-- Form Name -->
 					<legend>Web Checkout</legend>
@@ -516,14 +515,14 @@ jQuery(document).ready(function() {
 								</select>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="booking-form__field form-group">
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<!-- Submit button -->
 								<button type="button" id="submitButton" class="btn btn-primary">Process Payment</button>
 							</div>	
-							<div class="col-xs-6 col-sm-3 col-md-4">
+							<div class="col-xs-6 col-sm-3 col-md-5">
 								<!-- Reset button -->
-								<button id="paymentResetButton" type="button" value="Reset Payment" class="btn btn-primary">Reset Payment</button><br />
+								<button id="paymentResetButton" type="button" value="Reset Payment" class="btn btn-primary pull-right">Reset Payment</button><br />
 							</div>
 						</div>
 						<br />

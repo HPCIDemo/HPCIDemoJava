@@ -322,3 +322,46 @@ li #hostedPCI {
     background-color: #F8F8F8;
     display:none;
 }
+
+@media (min-width: 1000px) {
+	body {
+		font-size: 1.5rem !important;
+	}
+	.input-text, input[type="text"]{
+    	font-size: 1.3rem;
+	}
+	.btn {
+		font-size: inherit;
+	}
+}
+
+select {
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: border-box;
+}
+
+.form-group select {
+    padding: 0.1em 0 0.1em 0;
+}
+
+.form-group select {
+    padding: 5px 6px;
+    background-color: #fff;
+    border: 1px solid #597183;
+    border-radius: 0.15rem 0.5rem 0.3rem;
+    width: 100%;
+    transition: all 0.3s ease !important;
+    resize: vertical;
+    height: 40px;
+}
+.embed-responsive.embed-responsive-4by1 {
+	padding-bottom: 25%;  
+}
+
+@media screen and (max-width: 600px) {
+	.embed-responsive.embed-responsive-8by1 {
+		padding-bottom: 20%;
+	}
+}

@@ -4,29 +4,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>HostedPCI Demo App Web Checkout 3D Sec Payment Page</title>
+<title>HostedPCI Demo App - ACH tokenization</title>
 <!-- Bootstrap -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
-<!-- Font-Awesome -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-
 <link href="css/checkout.css" rel="stylesheet">
 <link rel="shortcut icon" href="./favicon-new.png">
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 <script src="js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/jquery.ba-postmessage.2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ccframe.hostedpci.com/WBSStatic/site60/proxy/js/hpci-cciframe-1.0.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var hpciCCFrameHost;	
-	var hpciCCFrameFullUrl;
+	var hpciCCFrameHost;
 	var hpciCCFrameName = "ccframe"; // use the name of the frame containing the credit card
-
+	var hpciCCFrameFullUrl;
+	
 	var hpciSiteErrorHandler = function(errorCode, errorMsg) {
 		// Please the following alert to properly display the error message
 		//alert("Error while processing credit card code:" + errorCode + "; msg:"	+ errorMsg);
@@ -41,37 +32,47 @@
 		console.log("=================End hpciSiteErrorHandler=================");
 	}
 
-	var hpciSiteSuccessHandlerV5 = function(hpciMappedCCValue, hpciMappedCVVValue, hpciCCBINValue, 
-							hpciGtyTokenValue, hpciCCLast4Value, hpciReportedFormFieldsObj, 
-							hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt) {
+	var hpciSiteSuccessHandlerV9 = function(hpciMsgSrcFrameName, hpciMappedACHValue, hpciMappedCVVValue, hpciCCBINValue, hpciGtyTokenValue, 
+			hpciACHLast4Value, hpciReportedFormFieldsObj, hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt, threeDSValuesObj, hpciCCTypeValue, 
+			hpciMappedACHValue1, hpciMappedACHValue2, hpciMappedACHValue3, hpciMappedACHValue4) {
 		
-		console.log("=================Begin hpciSiteSuccessHandlerV5=================");
-		// Please pass the values to the document input and then submit the form
+		console.log("=================Begin hpciSiteSuccessHandlerV9=================");
 		
-		// No errors from iframe so hide the errorMessage div
-		document.getElementById('errorMessage').style.display = 'none';
-		// Name of the input (hidden) field required by ecommerce site
-		// Typically this is a hidden input field.
-		var ccNumInput = document.getElementById("ccNum");
-		ccNumInput.value = hpciMappedCCValue;
-
-		// Name of the input (hidden) field required by ecommerce site
-		// Typically this is a hidden input field.
-		var ccCVVInput = document.getElementById("ccCVV");
-		ccCVVInput.value = hpciMappedCVVValue;
-
-		// Name of the input (hidden) field required by ecommerce site
-		// Typically this is a hidden input field.
-		var ccBINInput = document.getElementById("ccBIN");
-		ccBINInput.value = hpciCCBINValue;
-
-		// Name of the form submission for ecommerce site
+		var data = [
+			{ name: "hpciMappedACHValue", value: hpciMappedACHValue },
+			{ name: "hpciACHLast4Value", value: hpciACHLast4Value },
+			{ name: "hpciMappedACHValue1", value: hpciMappedACHValue1 },
+			{ name: "hpciMappedACHValue2", value: hpciMappedACHValue2 },
+			{ name: "hpciMappedACHValue3", value: hpciMappedACHValue3 },
+			{ name: "hpciMappedACHValue4", value: hpciMappedACHValue4 }
+		];
+			
+		console.table(data);
+		
+		var achNumInput = document.getElementById("achNum");
+		achNumInput.value = hpciMappedACHValue;
+		
+		var ccLast4Input = document.getElementById("achLast4");
+		ccLast4Input.value = hpciACHLast4Value;
+		
+		var achToken1Input = document.getElementById("achToken1");
+		achToken1Input.value = hpciMappedACHValue1;
+		
+		var achToken2Input = document.getElementById("achToken2");
+		achToken2Input.value = hpciMappedACHValue2;
+		
+		var achToken3Input = document.getElementById("achToken3");
+		achToken3Input.value = hpciMappedACHValue3;
+		
+		var achToken4Input = document.getElementById("achToken4");
+		achToken4Input.value = hpciMappedACHValue4;
+		
+		console.log("=================End hpciSiteSuccessHandlerV9=================");
+		
 		var pendingForm = document.getElementById("CCAcceptForm");
-		
-		console.log("=================End hpciSiteSuccessHandlerV5=================");
-		
 		pendingForm.submit();
 	}
+
 
 	var hpci3DSitePINSuccessHandler = function() {
 		// name of the form submission for ecommerce site
@@ -84,118 +85,37 @@
 		//alert("Could not verify PIN for the credit card");
 	}
 
-	var hpciCCPreliminarySuccessHandlerV4 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, 
-		hpciCCEnteredLengthValue, hpciMappedCCValue, hpciMappedCVVValue, hpciGtyTokenValue, hpciCCLast4Value, hpciReportedFormFieldsObj,
-		hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt) {
-
-		console.log("=================Begin hpciCCPreliminarySuccessHandlerV4===========");
+	var hpciACHPreliminarySuccessHandlerV1 = function(hpciMsgSrcFrameName, hpciMappedACHValue1, hpciMappedACHValue2,
+			hpciMappedACHValue3, hpciMappedACHValue4, hpciTokenRespEncrypt, hpciReportedFormFieldsObj) {
+		
+		console.log("=================Begin hpciACHPreliminarySuccessHandlerV1=============");
 		
 		var data = [
-			{ name: "hpciCCTypeValue", value: hpciCCTypeValue },
-			{ name: "hpciCCBINValue", value: hpciCCBINValue },
-			{ name: "hpciCCValidValue", value: hpciCCValidValue },
-			{ name: "hpciCCLengthValue", value: hpciCCLengthValue },
-			{ name: "hpciCCEnteredLengthValue", value: hpciCCEnteredLengthValue },
-			{ name: "hpciMappedCCValue", value: hpciMappedCCValue },
-			{ name: "hpciMappedCVVValue", value: hpciMappedCVVValue },
-			{ name: "hpciGtyTokenValue", value: hpciGtyTokenValue },
-			{ name: "hpciCCLast4Value", value: hpciCCLast4Value },
-			{ name: "hpciGtyTokenAuthRespValue", value: hpciGtyTokenAuthRespValue },
-			{ name: "hpciTokenRespEncrypt", value: hpciTokenRespEncrypt }
-			];
+			{ name: "hpciMappedACHValue1", value: hpciMappedACHValue1 },
+			{ name: "hpciMappedACHValue2", value: hpciMappedACHValue2 },
+			{ name: "hpciMappedACHValue3", value: hpciMappedACHValue3 },
+			{ name: "hpciMappedACHValue4", value: hpciMappedACHValue4 }
+		];
 			
 		console.table(data);
-
-		if(hpciCCValidValue == "Y")
-			document.getElementById('errorMessage').style.display = 'none';
 		
-		console.log("=================End hpciCCPreliminarySuccessHandlerV4=============");
-	}
-
-	var hpciCCDigitsSuccessHandlerV2 = function(hpciCCTypeValue, hpciCCBINValue, hpciCCValidValue, hpciCCLengthValue, hpciCCEnteredLengthValue) {
-		console.log("================ Begin hpciCCDigitsSuccessHandlerV2================");
-		// Use to enable credit card digits key press
-		sendHPCIChangeClassMsg("ccNum-wrapper", "input-text input-text--validatable");
-		
-		if(hpciCCValidValue == "Y") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--populated");
-		} else if(hpciCCValidValue == "N" && hpciCCLengthValue == "0") {
-			if(hpciCCEnteredLengthValue > "0") {
-				sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
-			} 
-			else {
-				sendHPCIChangeClassMsg("ccNum", "input-text__input");
-			}
-		} else if(hpciCCValidValue == "N" && hpciCCLengthValue > "0" && hpciCCEnteredLengthValue > "0") {
-			sendHPCIChangeClassMsg("ccNum", "input-text__input input-text__input--invalid input-text__input--populated");
-		}
-		if(hpciCCTypeValue == "visa") {
-			document.getElementById("visa").className = "fa fa-cc-visa active";
-		} else if(hpciCCTypeValue == "mastercard") {
-			document.getElementById("mastercard").className = "fa fa-cc-mastercard active";
-		} else if(hpciCCTypeValue == "amex") {
-			document.getElementById("amex").className = "fa fa-cc-amex active";
-		} else if(hpciCCTypeValue == "discover") {
-			document.getElementById("discover").className = "fa fa-cc-discover active";
-		} else if(hpciCCTypeValue == "jcb") {
-			document.getElementById("jcb").className = "fa fa-cc-jcb active";
+		if (!!hpciMappedACHValue1) {
+			sendHPCIChangeClassMsg("achNum1", "input-text__input input-text__input--populated");
 		} else {
-			document.getElementById("visa").className = "fa fa-cc-visa";
-			document.getElementById("mastercard").className = "fa fa-cc-mastercard";
-			document.getElementById("amex").className = "fa fa-cc-amex";
-			document.getElementById("discover").className = "fa fa-cc-discover";
-			document.getElementById("jcb").className = "fa fa-cc-jcb";
-		}
-		console.log("=================End hpciCCDigitsSuccessHandlerV2==================");
-	}
-	
-	var hpciCVVDigitsSuccessHandler = function(hpciCVVDigitsValue, hpciCVVValidValue) {
-		console.log("=================Begin hpciCVVDigitsSuccessHandler===========");
-		
-		// Use to enable CVV digits key press
-		sendHPCIChangeClassMsg("ccCVV-wrapper", "input-text input-text--validatable");
-		
-		var cvvLength = Number(hpciCVVDigitsValue);
-		if((cvvLength < 3) || (cvvLength > 4)) {
-			if (cvvLength == 0) {
-				sendHPCIChangeClassMsg("ccCVV", "input-text__input");
-			}else{
-				sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--invalid input-text__input--populated");
-			}
-		} else if ((cvvLength >= 3) && (cvvLength <= 4) && (hpciCVVValidValue == "Y")) {
-			sendHPCIChangeClassMsg("ccCVV", "input-text__input input-text__input--populated");
+			sendHPCIChangeClassMsg("achNum1", "input-text__input");
 		}
 		
-		console.log("=================End hpciCVVDigitsSuccessHandler=============");
-	}
-	
-	var hpciCVVPreliminarySuccessHandlerV4 = function (hpciCVVLengthValue, hpciCVVValidValue,hpciMappedCCValue, 
-		hpciMappedCVVValue, hpciCCBINValue, hpciGtyTokenValue, hpciCCLast4Value, hpciReportedFormFieldsObj, 
-		hpciGtyTokenAuthRespValue, hpciTokenRespEncrypt) {
-
-		console.log("=================Begin hpciCVVPreliminarySuccessHandlerV4=================");
-		var data = [
-			{ name: "hpciCVVLengthValue", value: hpciCVVLengthValue },
-			{ name: "hpciCVVValidValue", value: hpciCVVValidValue },
-			{ name: "hpciMappedCCValue", value: hpciMappedCCValue },
-			{ name: "hpciMappedCVVValue", value: hpciMappedCVVValue },
-			{ name: "hpciCCBINValue", value: hpciCCBINValue },
-			{ name: "hpciGtyTokenValue", value: hpciGtyTokenValue },
-			{ name: "hpciCCLast4Value", value: hpciCCLast4Value },
-			{ name: "hpciGtyTokenAuthRespValue", value: hpciGtyTokenAuthRespValue },
-			{ name: "hpciTokenRespEncrypt", value: hpciTokenRespEncrypt }
-		  ];
-		  
-		console.table(data);
-
-		if(hpciCVVValidValue == "Y"){
-			document.getElementById('errorMessage').style.display = 'none';
+		if (!!hpciMappedACHValue2) {
+			sendHPCIChangeClassMsg("achNum2", "input-text__input input-text__input--populated");
+		} else {
+			sendHPCIChangeClassMsg("achNum2", "input-text__input");
 		}
-		console.log("=================End hpciCVVPreliminarySuccessHandlerV4=================");
+		
+		console.log("=================End hpciACHPreliminarySuccessHandlerV1=============");
 	}
 </script>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+jQuery(document).ready(function() {	
 	var siteId;
     var locationName;
     var fullParentQStr;
@@ -204,7 +124,7 @@ jQuery(document).ready(function() {
     var paymentProfile;
     var flag = "config";
     
-    jQuery.get("Iframe3DSecServlet",
+    jQuery.get("ACHServlet",
     	    {
     			flag:flag,
     		},
@@ -230,15 +150,15 @@ jQuery(document).ready(function() {
     				var currencyCombo = document.getElementById("currency");    				  				
     				queryTokenList = currency.split('/');
     				for(var i = 0; i < queryTokenList.length; i++){
-    					var option = document.createElement('option');  
+    					var optionCurrency = document.createElement('option');  
     					queryToken = queryTokenList[i].split('=');
-   						option.value = queryToken[1];
-   						option.text = queryToken[0];
-   						currencyCombo.add(option, 0);	
+   						optionCurrency.value = queryToken[1];
+   						optionCurrency.text = queryToken[0];
+   						currencyCombo.add(optionCurrency, 0);	
     				}
     			}
     			//Setting Payment Profile drop-down list options
-    			paymentProfile= resultMap["securePaymentProfile"];
+    			paymentProfile= resultMap["paymentProfile"];
     			if(paymentProfile){    				
     				var paymentProfileCombo = document.getElementById("paymentProfile");    				  				
     				queryTokenList = paymentProfile.split('/');
@@ -253,14 +173,17 @@ jQuery(document).ready(function() {
     			console.log(fullParentHost);
     			console.log(location.pathname);
     			console.log("SiteId :" + siteId);
-    			console.log("LocationName :" +locationName);  
+    			console.log("LocationName :" +locationName);
     			console.log("Currency:" +currency);
     			console.log("Payment Profiles:" +paymentProfile);
     			hpciCCFrameFullUrl = hpciCCFrameHost + "/iSynSApp/showPxyPage!ccFrame.action?pgmode1=prod&"
     				    +"locationName="+locationName
     				    +"&sid=" + siteId
     				    +"&reportCCType=Y&reportCCDigits=Y&reportCVVDigits=Y"
-    				    +"&formatCCDigits=Y&formatCCDigitsDelimiter=-"
+    				    +"&strictMsgFmt=Y"
+    				    +"&enableEarlyToken=Y"
+    				    +"&dataType=achus1"
+    				    +"&pluginModeDef=jq3"
     				    +"&fullParentHost=" + fullParentHost
     				    +"&fullParentQStr=" + fullParentQStr;
     			document.getElementById("ccframe").src=hpciCCFrameFullUrl;    			
@@ -269,7 +192,7 @@ jQuery(document).ready(function() {
         
 	jQuery('#paymentResetButton').click(function resetPayment() {
 		document.getElementById('CCAcceptForm').reset();
-	});
+	});	
 	
 	jQuery('input:text').on('blur', function(){
 		if (jQuery(this).val() ) { 
@@ -278,8 +201,6 @@ jQuery(document).ready(function() {
 			jQuery(this).attr("class", "");
 		};
 	});
-	
-	
 });
 </script>
 </head>
@@ -301,56 +222,22 @@ jQuery(document).ready(function() {
 			<!-- IMPORTANT: id CCAcceptForm needs to match the ID's in the HostedPCI script code -->
 			<!-- So if you change this ID, make sure to change it in all other places -->
 			<!-- Action points to the servlet -->
-			<form id="CCAcceptForm" action="./Iframe3DSecServlet" method="post">
-			<input type="hidden" name="action" value="formRequest">
+			<form id="CCAcceptForm" action="./ACHServlet" method="post" class="form-horizontal">
 				<fieldset>
 					<!-- Form Name -->
-					<legend>Web Checkout</legend>
+					<legend>ACH Checkout</legend>
 					<fieldset>
-						<legend>Credit Card Information</legend>
+						<legend>Acount Information</legend>
 						<!-- Error message for invalid credit card -->
-						<div id="errorMessage" style="display:none;color:red"><label>Invalid card number, try again</label><br/></div>										
+						<div id="errorMessage" style="display:none;color:red"><label>Invalid card number, try again</label><br/></div>
 						<!-- iframe -->
-						<div class="form-group">
-							<iframe seamless id="ccframe" name="ccframe" onload="receiveHPCIMsg()" src="" style="border:none; max-width:800px; min-width:30px; width:100%" height="140"> 
-							If you can see this, your browser doesn't understand IFRAME. 
-							</iframe>
+						<div class="booking-form__field embed-responsive embed-responsive-4by1">
+							
+								<iframe seamless id="ccframe" name="ccframe" onload="receiveHPCIMsg()" src=""> 
+								If you can see this, your browser doesn't understand IFRAME. 
+								</iframe>
+							
 						</div><!-- form-group -->
-						<div class="form-group">
-							<div class="col-xs-12">
-								<i id="visa" class="fa fa-cc-visa"></i>
-								<i id="mastercard" class="fa fa-cc-mastercard"></i>
-								<i id="amex" class="fa fa-cc-amex"></i>
-								<i id="discover" class="fa fa-cc-discover"></i>
-								<i id="jcb" class="fa fa-cc-jcb"></i>
-							</div>
-						</div><!-- form-group -->
-						<!-- Input form-group (exp, month, cvv) -->						
-						<div class="booking-form__field">
-							<label>Expiry date</label>
-					    </div>
-					    <div>
-							<div class="col-xs-4 col-sm-3 col-md-2">
-								<div class="booking-form__field">
-									<div class="input-text">
-										<input id="expiryMonth" type="text" name="expiryMonth">
-										<label for="expiryMonth">
-										Month
-										</label>
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-4 col-sm-3 col-md-2">
-								<div class="booking-form__field">
-									<div class="input-text">
-										<input id="expiryYear" type="text" name="expiryYear">
-										<label for="expiryYear">
-										Year
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>
 					</fieldset>
 					<br />
 					<fieldset>
@@ -438,7 +325,7 @@ jQuery(document).ready(function() {
 								</label>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="booking-form__field form-group">
 							<div class="col-xs-4 col-sm-3 col-md-4">
 								<label>Currency:</label>
 							</div>
@@ -460,14 +347,14 @@ jQuery(document).ready(function() {
 								<label>Payment Profile:</label>
 							</div>
 							<div class="col-xs-4 col-sm-3 col-md-5">
-								<select id="paymentProfile" name="paymentProfile">
+								<select id="paymentProfile" name="paymentProfile">									
 								</select>
 							</div>
-						</div>						
+						</div>
 						<div class="booking-form__field form-group">
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<!-- Submit button -->
-								<button type="submit" value="Submit" class="btn btn-primary"
+								<button type="submit" value="Submit" id="submitButton" class="btn btn-primary"
 									onClick='return sendHPCIMsg();'>Process Payment</button>
 							</div>	
 							<div class="col-xs-6 col-sm-3 col-md-5">
@@ -479,10 +366,12 @@ jQuery(document).ready(function() {
 						<div class="form-group">
 							<!-- Hidden form-groups that are required by the iframe -->
 							<div class="col-xs-6 col-sm-3 col-md-4">
-								<input type="hidden" id="ccNum" name="ccNum" value="" class="form-control"> 
-								<input type="hidden" id="ccCVV" name="ccCVV" value="" class="form-control"> 
-								<input type="hidden" id="ccBIN" name="ccBIN" value="" class="form-control">
-								<input type="hidden" id="action3DSec" name="action3DSec" value="verifyenroll" class="form-control">
+								<input type="hidden" id="achNum" name="achNum"> 
+								<input type="hidden" id="achLast4" name="achLast4"> 
+								<input type="hidden" id="achToken1" name="achToken1">
+								<input type="hidden" id="achToken2" name="achToken2">
+								<input type="hidden" id="achToken3" name="achToken3">
+								<input type="hidden" id="achToken4" name="achToken4">
 							</div>
 						</div>
 					</fieldset>	

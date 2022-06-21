@@ -220,7 +220,7 @@ public class FileDispatchServlet extends HttpServlet {
 		if (request.getParameterMap().containsKey("flag")) {
 			flag = request.getParameter("flag");
 		}
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 
 		if (flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -242,7 +242,7 @@ public class FileDispatchServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 		
 		InputStream dispatchFileStream = null;
 		Part part = request.getPart("tokenFile");

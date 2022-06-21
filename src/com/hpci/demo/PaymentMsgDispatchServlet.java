@@ -104,7 +104,7 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 		if (request.getParameterMap().containsKey("flag")) {
 			flag = request.getParameter("flag");
 		}
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 
 		if (flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -128,7 +128,7 @@ public class PaymentMsgDispatchServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Map<String, String> paramMap = new HashMap<String, String>();
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 		
 		String serviceUrl = mapConfig.get(PROPERTY_API_SERVICE_URL);
 		String userName = mapConfig.get(PXYPARAM_USERNAME);

@@ -34,7 +34,7 @@ public class IframeAutofillServlet extends HttpServlet{
 		if (request.getParameterMap().containsKey("flag")) {
 			flag = request.getParameter("flag");
 		}
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 
 		if (flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -81,7 +81,7 @@ public class IframeAutofillServlet extends HttpServlet{
 		String customerId = "";
 				
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 		
 		// Populate hpciRequestParamMap with all the needed pairs of information
 		hpciRequestParamMap.put("apiVersion",mapConfig.get("apiVersion"));

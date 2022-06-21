@@ -30,7 +30,7 @@ public class GatewayTokenizationServlet extends HttpServlet {
 		if(request.getParameterMap().containsKey("flag")){
 					flag = request.getParameter("flag");
 		}
-		mapConfig = DemoUtil.getConfigProperties();
+		mapConfig = DemoUtil.getConfigProperties(null);
 		
 		if(flag.equals("config")) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -69,7 +69,7 @@ public class GatewayTokenizationServlet extends HttpServlet {
 		String currency = request.getParameter("currency");
 		
 		if(mapConfig == null)
-			mapConfig = DemoUtil.getConfigProperties();
+			mapConfig = DemoUtil.getConfigProperties(null);
 
 		// Setup request param map
 		Map<String, String> hpciRequestParamMap = new LinkedHashMap<String, String>();

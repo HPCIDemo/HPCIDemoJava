@@ -9,6 +9,7 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/template.css" rel="stylesheet">
+<link rel="shortcut icon" href="./favicon-new.png">
 <script src="js/jquery-2.1.1.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function(event){
@@ -260,7 +261,7 @@ $(document).ready(function () {
 </head>
 <body>
 <div class="container">
-		<div class="col-md-7 col-centered">
+		<div class="col-md-7 col-lg-10 col-centered">
 			<div class="demo-navbar">
 				<div class="row">
 					<ul>
@@ -465,14 +466,14 @@ $(document).ready(function () {
 								</select>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="booking-form__field form-group">
 							<div class="col-xs-6 col-sm-3 col-md-4">
 								<button id="processPaymentButton" type="button" value="Process Payment" 
-									class="btn btn-primary" disabled>Process Payment</button><br />
+									class="btn btn-primary pull-left" disabled>Process Payment</button><br />
 							</div>
-							<div class="col-xs-6 col-sm-3 col-md-4">
+							<div class="col-xs-6 col-sm-3 col-md-5">
 								<button id="paymentResetButton" type="button" value="Reset Payment" 
-									class="btn btn-primary" disabled>Reset Payment</button><br />
+									class="btn btn-primary pull-right" disabled>Reset Payment</button><br />
 							</div>
 						</div><!-- row -->
 					</fieldset>
@@ -505,7 +506,7 @@ $(document).ready(function () {
 						</div><!-- row -->
 						<div class="form-group">
 							<div class="col-md-12">
-								<input type="button" id="toggleMessage" value="Show message" class="btn">
+								<input type="button" id="toggleMessage" value="Show message" class="btn pull-left">
 								<div id="message">
 								</div><br />
 							</div>	
