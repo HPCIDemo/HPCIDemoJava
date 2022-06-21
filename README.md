@@ -1,4 +1,4 @@
-HPCIDemoJava v5.0 April 11 2019
+HPCIDemoJava v6.0
 ================
 
 HostedPCI Demo App
@@ -53,9 +53,9 @@ Phone Session:
 
 Release information
 ===================
-Version 5.0, April 11 2019
+Version 6.0
 
-Java JDK 8
+Java JDK 11
 Jetty 9.4.15
 
 Installation
@@ -79,9 +79,9 @@ Running the App:
 2. Type </br>
 **```java -jar jetty-runner.jar --stats unsecure --log yyyy_mm_dd-requests.log --port 8799 --out yyyy_mm_dd-output.txt HPCIDemoJava.war```**
 3. If everything went well, you should see something like this and a blinking cursor afterwards: </br>
-**```2019-04-11 14:30:54.262:INFO::main: Logging initialized @246ms to org.eclipse.jetty.util.log.StdErrLog
-2019-04-11 14:30:54.273:INFO:oejr.Runner:main: Runner
-2019-04-11 14:30:54.281:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt```**
+**```2022-06-21 17:57:23.578:INFO::main: Logging initialized @140ms to org.eclipse.jetty.util.log.StdErrLog
+2022-06-21 17:57:23.584:INFO:oejr.Runner:main: Runner
+2022-06-21 17:57:23.598:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt```**
 4. Open any browser and type in **```http://localhost:8799/home.jsp```** and choose one of the services you want to try.
 
 ### Option 3 - Setup local SSL certificate for Jetty Runner:
@@ -89,9 +89,9 @@ Running the App:
 1. Open the terminal/command prompt and go to the path_to_HPCIDemoJava/war folder
 2. Type </br> **```java -jar jetty-runner.jar --config jetty-config.xml --log yyyy_mm_dd-requests.log --out yyyy_mm_dd-output.txt HPCIDemoJava.war```**
 3. If everything went well, you should see something like this and a blinking cursor afterwards: </br>
-**```2019-04-11 14:30:54.262:INFO::main: Logging initialized @246ms to org.eclipse.jetty.util.log.StdErrLog
-2019-04-11 14:30:54.273:INFO:oejr.Runner:main: Runner
-2019-04-11 14:30:54.281:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt```**
+**```2022-06-21 17:57:23.578:INFO::main: Logging initialized @140ms to org.eclipse.jetty.util.log.StdErrLog
+2022-06-21 17:57:23.584:INFO:oejr.Runner:main: Runner
+2022-06-21 17:57:23.598:INFO:oejr.Runner:main: Redirecting stderr/stdout to yyyy_mm_dd-output.txt```**
 4. Open any browser and type in **```cc.localhpc.com:8799```** and choose one of the services you want to try
 
 How to use the Web Checkout app:
